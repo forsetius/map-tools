@@ -11,7 +11,7 @@ wywołaj funkcje Long2X i Lat2Y by uzyskać minimalne koordynaty obrazka
 **defineRegion** *mapFileName*, *regionName*, *LongW*, *LatN*, *LongE*, *LatS*
 zapisz w pliku CSV definicję regionu
 
-**makeVT** *mapFileName*
+**make-vt** *mapFileName* *addonName* *vtName*
 
 **swap-map** *mapFileName*
 zamienia miejscami połówki mapy
