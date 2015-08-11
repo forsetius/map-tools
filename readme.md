@@ -10,10 +10,12 @@ wywołaj funkcje Long2X i Lat2Y by uzyskać minimalne koordynaty obrazka
 **defineRegion** *mapFileName*, *regionName*, *LongW*, *LatN*, *LongE*, *LatS*
 zapisz w pliku CSV definicję regionu
 
-##**make-vt**
+
+##***make-vt***
+
 Creates a Virtual Texture (VT) out of map provided.
 
-**Syntax**: 
+**Syntax**:
 
 `make-vt.php -s <source-filename> [-a <addon-name>] [-o <output-name>]`
 
@@ -34,13 +36,15 @@ Creates a Virtual Texture (VT) out of map provided.
 
 `-o` : *(optional)* name of VT within the addon. If not provided, default is used. If name contains ? character, it will be substituted with map size.
 
-##**swap-map** 
+
+##***swap-map***
+
 Swaps the halves of map horizontally.
 
-**Syntax**: 
+**Syntax**:
 
 `swap-map.php <map-filename>`
 
-**Note**: 
+**Note**:
 
 Output file is `map-filename` with "-swapped" appended before the extension.

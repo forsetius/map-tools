@@ -1,3 +1,4 @@
+#!/usr/bin/php5
 <?php
 
 if (empty($argv[1])) exit("Podaj nazwę pliku mapy!");

@@ -1,3 +1,4 @@
+#!/usr/bin/php5
 <?php
 ini_set('memory_limit','2048M');
 
