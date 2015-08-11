@@ -1,10 +1,12 @@
+#!/usr/bin/php5
 <?php
-define("VERSIOM", 0.1);
+define("DEBUG", true);
+define("VERSION", 0.1);
 define("DEFAULT_ADDON_NAME", "Forseti");
 define("DEFAULT_VT_FOLDER_NAME", "map?k");
 
 $cla = getopt("s:a:o:hv");
-if (! $cla) exit('Incorrect syntax. See `make-vt.php -h` for help.');
+if (! $cla) exit("Incorrect syntax. See `make-vt.php -h` for help.\n");
 
 # Inicjalizacja parametrów z linii poleceń
 // Tylko wypisz pomoc
@@ -13,7 +15,7 @@ if (array_key_exists('h', $cla)) printHelp(); // Zawiera exit
 if (array_key_exists('v', $cla)) printVersion(); // Zawiera exit
 
 // Weź nazwę pliku z mapą
-if (! array_key_exists('s', $cla)) exit('No map\'s filename given. See `make-vt.php -h` for help.');
+if (! array_key_exists('s', $cla)) exit("No map's filename given. See `make-vt.php -h` for help.\n");
 $mapName = $cla['s'];
 
 // Weź nazwę dodatku jeśli podana. Nie? użyj domyślnej
@@ -21,7 +23,7 @@ if (array_key_exists('a', $cla)) {
     if (preg_match('/\w+/', $cla['a']) == 1) {
         $addonName = $cla['a'];
     } else {
-        exit('Error! Add-on\'s name contains illegal characters. Use letters, numbers and underscores only');
+        exit("Error! Add-on's name contains illegal characters. Use letters, numbers and underscores only\n");
     }
 } else $addonName = DEFAULT_ADDON_NAME;
 
@@ -30,13 +32,13 @@ if (array_key_exists('o', $cla)) {
     if (preg_match('/\w+/', $cla['o']) == 1) {
         $vtName = $cla['o'];
     } else {
-        exit('Error! Virtual texture\'s name contains illegal characters. Use letters, numbers and underscores only');
+        exit("Error! Virtual texture's name contains illegal characters. Use letters, numbers and underscores only\n");
     }
 } else $vtName = DEFAULT_VT_FOLDER_NAME;
 
 // Wczytaj obrazek
-if(! file_exists($cla)) exit('Incorrect map\'s filename. File doesn\'t exist');
-switch (exif_imagetype($argv[1])) {
+if(! file_exists($cla['s'])) exit("Incorrect map's filename. File doesn't exist\n");
+switch (exif_imagetype($cla['s'])) {
 	case IMAGETYPE_JPEG :
 		$imType = 'Jpeg';
 		break;
@@ -44,47 +46,54 @@ switch (exif_imagetype($argv[1])) {
 		$imType = 'Png';
 		break;
 	default :
-		exit("Error! Unsupported file type. Supported types: Jpeg and PNG.");
+		exit("Error! Unsupported file type. Supported types: Jpeg and PNG.\n");
 }
+if (DEBUG) echo "Loading map\n";
 $callFunc = 'imageCreateFrom' . $imType;
 $sourceImg = $callFunc($cla['s']);
 
 // Ustal wymiary obrazka
 $sourceWidth = imagesx($sourceImg);
 $sourceHeight = imagesy($sourceImg);
+if (DEBUG) echo "Loaded $sourceWidth x $sourceHeight image\n";
 
 //   - sprawdź czy szerokość = 2 * wysokość. Nie? wyrzuć błąd
-if ($sourceWidth != $sourceHeight) exit('Error! Map\'s width must be 2 * height.');
-if ($sourceHeight < 1024) exit('Error! Map\'s resolution is too low. Should be 2048*1024 or greater');
+if ($sourceWidth != 2 * $sourceHeight) exit("Error! Map's width must be 2 * height.\n");
+if ($sourceHeight < 1024) exit("Error! Map's resolution is too low. Should be 2048*1024 or greater\n");
 
 // ustal docelowe wymiary i poziom mapy
 $dim = 1024; $level = 0;
 while ($dim*2 <= $sourceWidth) {
     $dim *= 2; $level++;
-}
 
+}
+if (DEBUG) echo "Max level: $level, resolution: $dim x ". $dim/2 ."\n";
 // załóż katalog na addon o nazwie $addonName
 if (! file_exists($addonName)) mkdir($addonName);
-if (! file_exists($addonName)) exit('Error! Couldn\'t create add-on\'s folder. Permission issue?' . $addonName);
+if (! file_exists($addonName)) exit("Error! Couldn't create add-on's folder $addonName. Permission issue?\n");
 
 // załóż podkatalogi textures/hires/map$level/
-$vtName = str_replace('?', $dim/2/1024 , $vtName);
+$vtName = str_replace('?', $dim/1024 , $vtName);
 $vtPath = $addonName . '/textures/hires/' . $vtName;
-if (file_exists($vtPath)) exec('rm -rf ' . $vtName);
+if (file_exists($vtPath)) exec('rm -rf ' . $vtPath);
+if (DEBUG) echo "Creating folders in $vtPath\n";
 mkdir($vtPath, 0777, true);
-createSSC($addonName);
+createSSC($addonName, $vtName);
 createCTX($vtPath, $vtName);
 
 // dla każdego poziomu mapy od bieżącego do 1 stwórz kafelki
-for ($level; $level > 0 ; $level--) {
+if (DEBUG) echo "Slicing the map\n";
+for ($level; $level >= 0 ; $level--) {
     // załóż katalog level$nr
-    mkdir($vtName . '/level' . $level);
+    if (DEBUG) echo "Level $level\n";
+    mkdir($vtPath . '/level' . $level);
     $sourceImg = scale($sourceImg, $dim);
 
     // Potnij na obrazki 512*512 i zapisz je w katalogu level$nr
     for ($x=0;$x<pow(2,$level+1);$x++) {
     	for ($y=0;$y<pow(2,$level);$y++) {
-            createTile($sourceImg, 512, $x, $y, $vtName . '/level' . $level);
+            $tileSize = ($level!=0) ? 512 : 1024;
+            createTile($sourceImg, $tileSize, $x, $y, $vtPath . '/level' . $level);
         }
     }
 
@@ -92,13 +101,7 @@ for ($level; $level > 0 ; $level--) {
     $dim /= 2;
 } // koniec pętli, w której tworzymy kafelki
 
-// załóż katalog level0
-mkdir($vtName . '/level0');
-
-// potnij na 2 obrazki 1024*1024 i zapisz je w katalogu level0
-for ($x=0; $x < 1; $x++) createTile($sourceImg, 1024, $x, 0, $vtName . '/level0');
-imagedestroy($targetImg);
-
+if (DEBUG) echo "Done\n";
 
 function scale($sourceImg, $dim) {
     $scaledImg = imagecreatetruecolor($dim, $dim/2);
@@ -142,28 +145,42 @@ function printHelp()
     echo <<<EOH
 This utility creates a Virtual Texture (VT) out of map provided.
 
-Syntax: make-vt.php -s <source-map-filename> [-a <addon-name>] []-o <output-texture-name>]
+\e[1mSYNTAX\e[0m
+        make-vt.php -s \e[4m<source-map-filename>\e[0m [-a \e[4m<addon-name>\e[0m] [-o \e[4m<output-texture-name>\e[0m]
         make-vt.php -h
         make-vt.php -v
 
-Notes:
+\e[1mNOTES\e[0m:
         1. source map must have dimensions:  width = 2 * height
         2. source map must have at least 1024px height
+        3. it can be PNG or Jpeg type
 
-Switches:
-       -s : (required) filename of source map
-       -a : (optional) name of addon that will include the VT to be created.
-            If not provided, default {DEFAULT_ADDON_NAME} is used
-       -o : (optional) name of VT within the addon
-            If not provided, default {DEFAULT_VT_FOLDER_NAME} is used.
-            If name contains ? character, it will be substituted with map size.
+\e[1mSWITCHES\e[0m:
+        \e[1m-s\e[0m \e[4m<source-map-filename>\e[0m
+                (required) filename of source map
+
+        \e[1m-a\e[0m \e[4m<addon-name>\e[0m
+                (optional) name of addon that will include the VT to be created.
+                If not provided, default {DEFAULT_ADDON_NAME} is used
+
+        \e[1m-o\e[0m \e[4m<output-texture-name>\e[0m
+                (optional) name of VT within the addon
+                If not provided, default {DEFAULT_VT_FOLDER_NAME} is used.
+                If name contains ? character, it will be substituted with map size.
+
+        \e[1m-h\e[0m
+                This help information.
+
+        \e[1m-v\e[0m
+                Version of this script.
+
 EOH;
     exit;
 }
 
 function printVersion()
 {
-    echo 'Version: ' . VERSION;
+    echo 'Version: ' . VERSION . "\n";
     exit;
 }
 
