@@ -66,7 +66,7 @@ createCTX($vtPath, $vtName);
 
 // dla każdego poziomu mapy od bieżącego do 1 stwórz kafelki
 if ($verbose) echo "Slicing the map\n";
-for ($level; $level >= 0 ; $level--) {
+for ($level; $level > 0 ; $level--) {
     // załóż katalog level$nr
     if ($verbose) echo "Level $level\n";
     mkdir($vtPath . '/level' . $level);
@@ -75,14 +75,20 @@ for ($level; $level >= 0 ; $level--) {
     // Potnij na obrazki 512*512 i zapisz je w katalogu level$nr
     for ($x=0;$x<pow(2,$level+1);$x++) {
     	for ($y=0;$y<pow(2,$level);$y++) {
-            $res = ($level!=0) ? 512 : 1024;
-            $sourceImg->writeRect($res*$x, $res*$y, $res, $res, $vtPath . '/level' . $level . '/tx_' . $x . '_' . $y . '.png');
+            $sourceImg->writeRect(512*$x, 512*$y, 512, 512, $vtPath . '/level' . $level . '/tx_' . $x . '_' . $y . '.png');
         }
     }
 
     // przeskaluj mapę do 50%*50%
     $dim /= 2;
 } // koniec pętli, w której tworzymy kafelki
+
+// poziom 0
+$sourceImg->scale(2048, 1024);
+if ($verbose) echo "Level 0\n";
+mkdir($vtPath . '/level0');
+$sourceImg->writeRect(0, 0, 1024, 1024, $vtPath . '/level0/tx_0_0.png');
+$sourceImg->writeRect(1024, 0, 1024, 1024, $vtPath . '/level0/tx_1_0.png');
 
 if ($verbose) echo "Done\n";
 
@@ -115,7 +121,7 @@ function printHelp()
 This utility creates a Virtual Texture (VT) out of map provided.
 
 \e[1mSYNTAX\e[0m
-        make-vt.php -s \e[4m<source-map-filename>\e[0m [-a \e[4m<addon-name>\e[0m] [-o \e[4m<output-texture-name>\e[0m] -v
+        make-vt.php -s \e[4m<source-map-filename>\e[0m [-a \e[4m<addon-name>\e[0m] [-o \e[4m<output-texture-name>\e[0m] [-v]
         make-vt.php -h
 
 \e[1mNOTES\e[0m:
@@ -129,11 +135,11 @@ This utility creates a Virtual Texture (VT) out of map provided.
 
         \e[1m-a\e[0m \e[4m<addon-name>\e[0m
                 (optional) name of addon that will include the VT to be created.
-                If not provided, default {DEFAULT_ADDON_NAME} is used
+                If not provided, default '{DEFAULT_ADDON_NAME}' is used
 
         \e[1m-o\e[0m \e[4m<output-texture-name>\e[0m
                 (optional) name of VT within the addon
-                If not provided, default {DEFAULT_VT_FOLDER_NAME} is used.
+                If not provided, default '{DEFAULT_VT_FOLDER_NAME}' is used.
                 If name contains ? character, it will be substituted with map size.
 
         \e[1m-h\e[0m
@@ -143,12 +149,6 @@ This utility creates a Virtual Texture (VT) out of map provided.
                 Verbose mode. The script will issue reports on its progress.
 
 EOH;
-    exit;
-}
-
-function printVersion()
-{
-    echo 'Version: ' . VERSION . "\n";
     exit;
 }
 

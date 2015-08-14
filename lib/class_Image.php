@@ -60,8 +60,11 @@ class Image
     }
 
     public function writeRect($x, $y, $w, $h, $path, $type = 'png') {
+        echo "New image\n";
         $rect = imagecreatetruecolor($w, $h);
+        echo "Copy\n";
         imagecopy($rect, $this->image, 0, 0, $x, $y, $w, $h);
+        echo "Write\n";
         $this->write($path, $type, $rect);
         imagedestroy($rect);
     }
