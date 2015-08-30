@@ -1,0 +1,34 @@
+Clips given image.
+
+<h1>SYNTAX</h1>
+        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;left-margin&gt;</u>] [-t <u>&lt;top-margin&gt;</u>] [-r <u>&lt;right-margin&gt;</u>] [-b <u>&lt;bottom-margin&gt;</u>] [-v]
+        <b>clip-image.php</b> --help
+
+<h1>SWITCHES</h1>
+        <b>-s</b> <u>&lt;source-filename&gt;</u>
+                (required) filename of source map
+
+        <b>-o</b> <u>&lt;output-filename&gt;</u>
+                (optional) a path and filename for output image
+                If not provided, 'modified-' + <source-filename> is used.
+
+        <b>-l</b> <u>&lt;left-margin&gt;</u>
+                Left margin
+
+        <b>-t</b> <u>&lt;top-margin&gt;</u>
+                Top margin
+
+        <b>-r</b> <u>&lt;right-margin&gt;</u>
+                Right margin
+
+        <b>-b</b> <u>&lt;bottom-margin&gt;</u>
+                Bottom margin
+
+        <b>-v</b>
+                Verbose mode. The script will issue reports on its progress.
+
+        <b>--help</b>
+                This help information.
+
+<h1>NOTE</h1>
+        If <b>-l</b>, <b>-t</b>, <b>-r</b> or <b>-b</b> is not provided then 0 margin on that side is assumed.

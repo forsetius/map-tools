@@ -1,0 +1,28 @@
+Scales given image.
+
+<h1>SYNTAX</h1>
+        <b>scale-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-w <u>&lt;width&gt;</u>] [-h <u>&lt;height&gt;</u>] [-v]
+        <b>scale-image.php</b> --help
+
+<h1>SWITCHES</h1>:
+        <b>-s</b> <u>&lt;source-filename&gt;</u>
+                (required) filename of source map
+
+        <b>-o</b> <u>&lt;output-filename&gt;</u>
+                (optional) a path and filename for output image
+                If not provided, 'modified-' + &lt;source-filename&gt; is used.
+
+        <b>-w</b> <u>&lt;width&gt;</u>
+                Output image's width
+                If not given, the image will be scaled down to nearest power of 2
+                For example, image of <u>&lt;width&gt;</u>=10000px will be reduced to 8192px
+
+        <b>-h</b> <u>&lt;height&gt;</u>
+                Output image's height
+                If not given, the image will have <u>&lt;height&gt;</u> = <u>&lt;width&gt;</u> / 2
+
+        <b>-v</b>
+                Verbose mode. The script will issue reports on its progress.
+
+        <b>--help</b>
+                This help information.
