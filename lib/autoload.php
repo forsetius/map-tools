@@ -1,5 +1,5 @@
 <?php
 spl_autoload_register(function( $class ) {
-        include strtr($class, '_\\', '//') . '.php';
+        require strtr($class, '_\\', '//') . '.php';
     });
 ?>

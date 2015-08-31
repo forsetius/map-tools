@@ -38,7 +38,11 @@ abstract class aRecorder
      * @return integer
      */
     public function getDiff() {
-        return end($this->history)['value'] - ((count($this->history)>1) ? $this-prev($this->history)['value'] : 0);
+        $h = $this->history;
+        $e = end($h)['value'];
+        $p = prev($h)['value'];
+        $result = $e - ((count($h)>1) ? $p : 0);
+        return $result;
     }
 
     /**

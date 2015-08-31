@@ -6,18 +6,18 @@ namespace pl\forseti\cli;
  */
 class CLA
 {
-    protected $opts = array();
+    protected $args = array();
 
-    public function __construct(array $options = array())
+    public function __construct(array $args = array())
     {
-        $this->addOption(new Option('v', false, Option::NO));  	// verbose?
-        $this->addOption(new Option('help', false, Option::NO));// print help and exit
-        $this->opts = $options + $this->opts;
+        $this->addArg(new Binary('v'));  	// verbose?
+        $this->addArg(new Binary('help'));// print help and exit
+        $this->args = $args + $this->args;
     }
 
-    public function addOption(Option $o)
+    public function addArg(aArgument $a)
     {
-        $this->opts[$o->getName()] = $o;
+        $this->args[$a->getName()] = $a;
     }
 
     /**
@@ -32,29 +32,28 @@ class CLA
      */
     public function parse()
     {
-        $sopt = ''; $lopt = array();
-        foreach ($this->opts as $key => $option) {
-            if (strlen($key)>1) {
-                $lopt[] = $option->getNameV();
+        $sOpt = ''; $lOpt = array();
+        foreach ($this->args as $key => $arg) {
+            if (\strlen($key)>1) {
+                $lOpt[] = $arg->getNameV();
             } else {
-                $sopt .= $option->getNameV();
+                $sOpt .= $arg->getNameV();
             }
         }
 
-        $cla = getopt($sopt, $lopt);
+        $cla = \getopt($sOpt, $lOpt);
         
         if ($cla === false)
-        	throw new \Exception('Invalid syntax. See: `'. basename($GLOBALS['argv'][0]) .' -- help` for more information');
+        	throw new \Exception('Invalid syntax. See: `'. \basename($GLOBALS['argv'][0]) .' -- help` for more information');
        
 		foreach ($cla as $name => $value) {
-			if ($value === false) $value = true;
-			$this->opts[$name]->setValue($value);
+			$this->args[$name]->setValue($value);
 		}
     }
 
     public function __get($name)
     {
-    	return $this->opts[$name]->getValue();
+    	return $this->args[$name]->getValue();
     }
     
     public function postproc() {

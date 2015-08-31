@@ -14,8 +14,10 @@ class MemoryUsage extends aRecorder
      */
     public static function format($value)
     {
+        $val = \abs($value);
         $unit=array('B','kiB','MiB','GiB','TiB','PiB');
-        return @round($value/pow(1024,($i=floor(log($value,1024)))),2).' '.$unit[$i];
+        $val = @round($val/pow(1024,($i=floor((($val==0)?0:log($val,1024))))),2).' '.$unit[$i];
+        return ($value < 0) ? '-'.$val : $val;
     }
     
     public function output($record) {
@@ -31,4 +33,5 @@ class MemoryUsage extends aRecorder
         $output = \shell_exec('free -b');
         return (int) \trim(\substr($output, 166, 11));
     }
+    
 }

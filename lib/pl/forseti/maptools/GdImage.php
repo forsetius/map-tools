@@ -78,15 +78,13 @@ class GdImage extends aImage
 
 	public static function dump($res, $path, $quality = 9)
 	{
-	    $type = \strtolower(\substr($path, \strrchr($path, '.')));
-	    if ($type == 'png') return 'png';
-	    if (\in_array($type, array('jpg', 'jpeg')))  return 'jpeg';
-        throw new \Exception("Unsupported image type $type. Only PNG and JPG are supported.");
+	    $type = \strtolower(\substr($path, \strrpos($path, '.')+1));
+	    if (\in_array($type, array('jpg', 'jpeg')))  $type = 'jpeg';
         
 	    if ($type == 'jpeg') $quality *= 10;
 	    $saveFunc = 'image' . $type;
 	    $saveFunc($res, $path, $quality);
-	    imagedestroy($$res);
+	    imagedestroy($res);
 	}
 	
     public function write($path, $quality = 9)
@@ -94,14 +92,8 @@ class GdImage extends aImage
         GdImage::dump($this->image, $path, $quality);
     }
 
-    public function writeRect($x, $y, $w, $h, $path, $type = 'png') {
-        $rect = $this->copy($x, $y, $w, $h);
-        $this->write($path, $type, 1, $rect->get());
-        $rect->destroy();
-    }
-    
     public function destroy() {
-    	imagedestroy($this->image);
+    	\imagedestroy($this->image);
     	$this->image = null;
     }
 }

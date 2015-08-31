@@ -41,7 +41,7 @@ trait tSingleton
      * Initializes the Singleton's instance
      * @return void
      */
-    protected function init();
+    protected function init() {}
 
     /**
      * Disables public unserialize

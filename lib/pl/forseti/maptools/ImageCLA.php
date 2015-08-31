@@ -9,9 +9,9 @@ class ImageCLA extends CLI\CLA
 {
 	public function __construct(array $options = array())
 	{
-		$this->addOption(new CLI\Option('s'));                     	// source file name
-        $this->addOption(new CLI\Option('o', 'modified-?'));        // output file name
-        $this->addOption(new CLI\Option('g', 'gd'));                // graphics library
+		$this->addArg(new CLI\Parameter('s'));                     	// source file name
+        $this->addArg(new CLI\Parameter('o', 'modified-?'));        // output file name
+        $this->addArg(new CLI\Parameter('g', 'gd'));                // graphics library
         parent::__construct($options);
 	}
 	
@@ -21,7 +21,7 @@ class ImageCLA extends CLI\CLA
 		
 		// output file name: '?' zamienia na nazwę pliku źródłowego
 		if (\strpos($this->o, '?') !== false)
-		    \str_replace('?', $this->s, $this->o);
+		    $this->o = \str_replace('?', $this->s, $this->o);
 		
 		// graphics library: GD, ImageMagick czy GMagick
 		// TODO ImageMagick czy GMagick

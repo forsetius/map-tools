@@ -19,16 +19,6 @@ class Benchmark
     use tSingleton;
     
     /**
-     * Returns the instance of tSingleton-enabled object.
-     * If not set yet, calls static::init to initialize
-     * @return Benchmark
-     */
-    public static function getInstance()
-    {
-        return parent::getInstance();
-    }
-
-    /**
      * @var Timer[] Timers with their time logs.
      */
     private $timers = array();
@@ -109,7 +99,7 @@ class Benchmark
     {
         $value = $this->timers[$timerName]->check($event);
         if ($this->echo) {
-            echo Timer::format($value) . " (+" . Timer::format($this->timers[$timerName]->getDiff()) .")\n";
+            echo $event .': '. Timer::format($value) . " (+" . Timer::format($this->timers[$timerName]->getDiff()) .")\n";
         }
         return $this;
     }
@@ -121,10 +111,12 @@ class Benchmark
      * @param string $event Description of measurement point.
      * @return Benchmark
      */
-    public function recMemory($event){
+    public function recMemory($event)
+    {
         $value = $this->memoryUsage->check($event);
         if ($this->echo) {
-            echo MemoryUsage::format($value) . " (+" . MemoryUsage::format($this->memoryUsage->getDiff()) .")\n";
+            $diff = MemoryUsage::format($this->memoryUsage->getDiff());
+            echo $event .': '. MemoryUsage::format($value) . " (". (($diff<0)?'':'+') . $diff .")\n";
         }
         return $this;
     }
@@ -134,11 +126,13 @@ class Benchmark
      * @param integer|float $n
      * @return void
      */
-    public function idle($n=10) {
+    public function idle($n=10)
+    {
         for($i=0;$i<10000000*$n;$i++);
     }
 
-    public function outputAll() {
+    public function outputAll()
+    {
         echo "\nMemory usage statistics:\n========================\n" . $this->memoryUsage->outputAll() ."\n";
         echo "\nTimers:\n========================";
         foreach ($this->timers as $name=>$timer) {
@@ -146,7 +140,8 @@ class Benchmark
         }
     }
 
-    public function saveCSV() {
+    public function saveCSV()
+    {
         $output = "Memory usage statistics:\n". $this->memoryUsage->outputCSV() ."\n";
         $output .= "Timers:\n";
         foreach ($this->timers as $name=>$timer) {

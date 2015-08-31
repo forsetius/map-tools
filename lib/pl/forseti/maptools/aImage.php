@@ -13,7 +13,7 @@ abstract class aImage
      *
      * @param string $library Choose from 'Gd', 'Imagemagick', 'Gmagick'
      * @throws \Exception if any other choice is made
-     * @return aImage
+     * @return void
      */
     public static function setLibrary($library)
     {
@@ -21,8 +21,7 @@ abstract class aImage
         if (! \in_array($library, array('Gd', 'Imagemagick', 'Gmagick')))
             throw new \Exception("Unsupported Image library: $library\n");
         
-        static::$library = $library . 'Image';
-        return self;
+        static::$library = 'pl\forseti\maptools\\' . $library . 'Image';
     }
     
     /**
@@ -66,7 +65,7 @@ abstract class aImage
      * @return void
      * @throws \Exception if file not found
      */
-    abstract public function load($filename) {
+    public function load($filename) {
         if(! file_exists($filename)) throw new \Exception("Incorrect map's filename. File $filename doesn't exist\n");
     }
     
@@ -134,11 +133,14 @@ abstract class aImage
      * @param integer $dy Destination image's Y-coordinate
      * @return aImage Destination image object
      */
-    abstract public function copy($x, $y, $w, $h, $dx = 0, $dy = 0);
+    abstract public function copyTo($x, $y, $w, $h, $destImg, $dx = 0, $dy = 0);
+    
+    abstract public function copy($x, $y, $w, $h);
     
     public static function dump($res, $path, $quality = 9)
     {
-        ${self::$library}::dump($res, $path, $quality);
+        $class = self::$library;
+        $class::dump($res, $path, $quality);
     }
     
     /**
@@ -151,15 +153,7 @@ abstract class aImage
      * @throws \Exception if $type not in ('jpeg', 'png')
      * @throws \Exception if $quality not in range (1..9)
      */
-    abstract public function write($filename, $type = 'png', $quality = 9) {
-        if (! \in_array($type, array('jpeg', 'png')))
-            throw new \Exception("Only 'png' and 'jpeg' types are allowed.");
-        
-        if ($range < 1 && $range > 9)
-            throw new \Exception("Quality must be in (1..9) range.");
-        
-        return true;
-    }
+    abstract public function write($path, $quality = 9);
     
     /**
      * Destroy the image resource and null it to free the memory
