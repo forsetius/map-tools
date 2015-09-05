@@ -4,6 +4,9 @@
  */
 namespace pl\forseti\maptools;
 
+use pl\forseti\reuse\LogicException;
+use pl\forseti\reuse\FilesystemException;
+
 abstract class aImage
 {
     protected static $library = 'Gd';
@@ -12,14 +15,14 @@ abstract class aImage
      * Set the graphics library to use
      *
      * @param string $library Choose from 'Gd', 'Imagemagick', 'Gmagick'
-     * @throws \Exception if any other choice is made
+     * @throws CapabilityException if any other choice is made
      * @return void
      */
     public static function setLibrary($library)
     {
         $library = \ucfirst(\strtolower($library));
         if (! \in_array($library, array('Gd', 'Imagemagick', 'Gmagick')))
-            throw new \Exception("Unsupported Image library: $library\n");
+            throw new CapabilityException("Unsupported image library: $library", CapabilityException::UNSUPPORTED_LIBRARY);
         
         static::$library = 'pl\forseti\maptools\\' . $library . 'Image';
     }
@@ -28,7 +31,7 @@ abstract class aImage
      * Factory method. Makes an instance of Image subclass.
      * Concrete type is chosen based on value of self::$library. Use aImage::setLibrary(string) to set it. 'Gd' is assumed.
      * @param mixed ...$args O to 2 arguments. If 0 - only create new object. If 1 - create new object and load the picture given in 1st parameter into it. If 2 - create new object and create new picture with dimensions given in 1st and 2nd parameter.
-     * @throws \Exception If number of parameters is greater than 2
+     * @throws LogicException If number of parameters is greater than 2
      * @return aImage
      */
     public final static function make(...$args) {
@@ -38,7 +41,7 @@ abstract class aImage
             case 0: break;                          // tylko stwórz obiekt
             case 1: $obj->load($args[0]); break;
             case 2: $obj->create($args[0], $args[1]); break;
-            default: throw new \Exception('Invalid number of parameters.');
+            default: throw new LogicException('Invalid number of parameters.', LogicException::BAD_METHOD_CALL);
         }
         return $obj;
     }
@@ -63,19 +66,22 @@ abstract class aImage
      * Takes image's filename and creates image resource stored in the object. If you overload this method use parent::Load($filename) at the beginning of your method.
      * @param string $filename Path and name of file to load
      * @return void
-     * @throws \Exception if file not found
+     * @throws FilesystemException if file not found
      */
     public function load($filename) {
-        if(! file_exists($filename)) throw new \Exception("Incorrect map's filename. File $filename doesn't exist\n");
+        if(! file_exists($filename))
+            throw new FilesystemException("File $filename doesn't exist", FilesystemException::FILE_NOT_FOUND);
     }
     
     /**
      * Get the image resource
      * @return resource
-     * @throws \Exception if no resource stored - either not created yet or already destroyed.
+     * @throws LogicException if no resource stored - either not created yet or already destroyed.
      */
     public function get() {
-        if (\is_null($this->image)) throw new \Exception('No resource stored.');
+        if (\is_null($this->image))
+            throw new LogicException('No resource stored.', LogicException::INVALID_RESOURCE);
+        
         return $this->image;
     }
     
@@ -83,10 +89,12 @@ abstract class aImage
      * Store the image resource in the object
      * @param resource $imgRes
      * @return void
-     * @throws \Exception if parameter is not Resource
+     * @throws LogicException if parameter is not Resource
      */
     public function set($imgRes) {
-        if (! \is_resource($imgRes)) throw new \Exception('Passed parameter is '. \gettype($imgRes) .'  - should be '. aImage::$library .' resource.');
+        if (! \is_resource($imgRes))
+            throw new LogicException('Passed parameter is '. \gettype($imgRes) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
+        
         $this->image = $imgRes;
     }
     
@@ -160,5 +168,10 @@ abstract class aImage
      * @return void
      */
     abstract public function destroy();
+    
+    public function __destruct() {
+        if (\is_resource($this->image))
+            $this->destroy();
+    }
 }
  ?>

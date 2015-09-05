@@ -27,7 +27,7 @@ class CLA
      * They should have 'false' as default value, meaning they were not specified in command line.
      * This is opposite of getopt behavior but is more logical.
      * @return void Parsed arguments are set into $this->opt and are accessible by $claObject->argName (using __get())
-     * @throws \Exception
+     * @throws \SyntaxException
      *
      */
     public function parse()
@@ -44,7 +44,7 @@ class CLA
         $cla = \getopt($sOpt, $lOpt);
         
         if ($cla === false)
-        	throw new \Exception('Invalid syntax. See: `'. \basename($GLOBALS['argv'][0]) .' -- help` for more information');
+        	throw new SyntaxException();
        
 		foreach ($cla as $name => $value) {
 			$this->args[$name]->setValue($value);

@@ -19,11 +19,11 @@ class Binary extends aArgument{
      * Note: Value passed is negated. This is to ensure that getopt's 'false' turns to true indicating that given switch was specified in command line.
      * @param boolean $val
      * @return void
-     * @throws \Exception if non-boolean passed
+     * @throws SyntaxException if non-boolean passed
      */
     public function setValue($val)
     {
-        if (! \is_bool($val)) throw new \Exception("Invalid value. Expected boolean, passed: \n". var_dump($val));
+        if (! \is_bool($val)) throw new SyntaxException("Invalid value. Expected boolean, passed: \n". var_dump($val));
         $this->value = ! $val;
     }
     

@@ -1,6 +1,8 @@
 <?php
 namespace pl\forseti\cli;
 
+use pl\forseti\reuse\FilesystemException as FSe;
+
 /**
  * Loading and converting help file to CLI, MarkDown or web use
  */
@@ -19,7 +21,7 @@ class Help
 		$helpFile = dirname($sn).'/help/'. substr(basename($sn),0,strripos($sn, '.php')) . '.help';
 		if (file_exists($helpFile)) {
 			return include $helpFile;
-		} else throw new \Exception("Help file `$helpFile` not found");
+		} else throw new FSe("Help file `$helpFile` not found", FSe::FILE_NOT_FOUND);
 	}
 	
 	private static function getTermSubsts() {

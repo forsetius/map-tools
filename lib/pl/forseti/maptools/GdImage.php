@@ -22,7 +22,7 @@ class GdImage extends aImage
         		$imType = 'png';
         		break;
         	default :
-        		 throw new \Exception("Unsupported file type. Supported types: Jpeg and PNG.\n");
+        		 throw new CapabilityException("Unsupported file type. Supported types: Jpeg and PNG.", CapabilityException::UNSUPPORTED_FORMAT);
         }
         
         $callFunc = 'imagecreatefrom' . $imType;
@@ -96,6 +96,7 @@ class GdImage extends aImage
     	\imagedestroy($this->image);
     	$this->image = null;
     }
+    
 }
 
  ?>

@@ -6,6 +6,8 @@ require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
 use pl\forseti\cli\ProgressBar;
 use pl\forseti\reuse\Benchmark;
 use pl\forseti\cli\Option;
+use pl\forseti\reuse\FilesystemException as FSe;
+
 $bm = Benchmark::getInstance();
 
 $cla = new ImageCLA();
@@ -32,7 +34,7 @@ if ($cla->t === false) {
     $bm->recMemory('After swapping, before destroying source image');
     $srcImg->destroy();
     $bm->recMemory('After destroying source image');
-
+    
     $srcImg = null;
     unset($srcImg);
     $bm->recMemory('After null on source object');
@@ -41,7 +43,7 @@ if ($cla->t === false) {
 // pokroić na parzystą w poziomie ilość mniejszych kawałków i w drugim kroku kopiować je na obrazek wynikowy
 } else {
     if (! mkdir($tempDir = 'temp'. date("YmdGis")))
-        exit("Error! Couldn't create add-on's folder $tempDir. Permission issue?\n");
+        throw new FSe("Couldn't create add-on's folder $tempDir. Permission issue?", FSe::ACCESS_DENIED);
     
     $nw = ceil($w/(2*$cla->t))*2; // ilość kawałków w poziomie. Niech mają max 1024px i niech ich będzie parzysta ilość
     $nh = ceil($h/$cla->t);   // ilość kawałków w pionie
@@ -107,9 +109,7 @@ if ($cla->t === false) {
     if (substr(strtolower(php_uname('s')),0,3) == 'win') {
         exec("DEL /S $tempDir");
     } else {
-        $bm->recMemory('bef del on tile object');
         exec("rm -rf $tempDir");
-        $bm->recMemory('After del on tile object');
     }
     $bm->recMemory('After null on tile object');
 }

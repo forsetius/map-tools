@@ -2,18 +2,23 @@
 <?php
 namespace pl\forseti\maptools;
 
-use pl\forseti\cli\Option;
+use pl\forseti\cli\Parameter;
 use pl\forseti\cli\ProgressBar;
+use pl\forseti\reuse\FilesystemException as FSe;
 
 $cla = new ImageCLA();
-$cla->addOption(new Option('a','Addon'));
-$cla->addOption(new Option('o','map?k'));
+$cla->addOption(new Parameter('a','Addon'));
+$cla->addOption(new Parameter('o','map?k'));
 $cla->parse();
 extract($cla->postproc());
 
+$srcImg = aImage::make($cla->s);
+
 //   - sprawdź czy szerokość = 2 * wysokość. Nie? wyrzuć błąd
-if ($srcImg->getWidth() != 2 * $srcImg->getHeight()) exit("Error! Map's width must be 2 * height.\n");
-if ($srcImg->getHeight() < 1024) exit("Error! Map's resolution is too low. Should be 2048*1024 or greater\n");
+if ($srcImg->getWidth() != 2 * $srcImg->getHeight())
+    throw new CapabilityException("Error! Map's width must be 2 * height.", CapabilityException::PARAM_OUT_OF_RANGE);
+if ($srcImg->getHeight() < 1024)
+    throw new CapabilityException("Error! Map's resolution is too low. Should be 2048*1024 or greater", CapabilityException::PARAM_OUT_OF_RANGE);
 
 // ustal docelowe wymiary i poziom mapy
 $dim = 1024; $level = 0;
@@ -24,7 +29,8 @@ while ($dim*2 <= $srcImg->getWidth()) {
 if ($cla->v) echo "Max level: $level, resolution: $dim x ". $dim/2 ."\n";
 // załóż katalog na addon o nazwie $addonName
 if (! file_exists($cla->a)) mkdir($cla->a);
-if (! file_exists($cla->a)) exit("Error! Couldn't create add-on's folder {$cla->a}. Permission issue?\n");
+if (! file_exists($cla->a))
+    throw new FSe("Couldn't create add-on's folder $cla->a. Permission issue?", FSe::ACCESS_DENIED);
 
 // załóż podkatalogi textures/hires/map$level/
 $vtName = str_replace('?', $dim/1024 , $cla->o);

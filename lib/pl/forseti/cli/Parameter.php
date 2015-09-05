@@ -17,7 +17,7 @@ class Parameter extends aArgument
     
     public function getValue()
     {
-        if ($this->value == null) throw new \Exception('Required option '. $this->name .' not supplied');
+        if ($this->value == self::REQ) throw new SyntaxException('Required value for parameter "'. $this->name .'" not supplied');
         return $this->value;
     }
     

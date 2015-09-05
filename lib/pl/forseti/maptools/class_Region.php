@@ -1,7 +1,7 @@
 <?php
 
 class Region {
-	DEFAULT_REGISTRY_FILE = '../registry.csv';
+	const DEFAULT_REGISTRY_FILE = '../registry.csv';
 
 	private $bodyRadius;
 	private $mapLevel;
@@ -16,7 +16,7 @@ class Region {
 			$data = fgetcsv($fHandle, 0, ',');
 			$this->bodyRadius = $data[1];
 			while(($data = fgetcsv($fHandle, 0, ',')) !== FALSE) {
-				if $data[0] == $name {
+				if ($data[0] == $name) {
 					list($this->name, $this->w, $this->e, $this->n, $this->s) = $data;
 				}
 			}
@@ -28,22 +28,22 @@ class Region {
 
 	public function getX() {
 		$longitude = normalizeLongitude($this->w);
-		return (pow(2,$mapLevel) * 1024) * $longitude / 360;
+		return (pow(2,$this->mapLevel) * 1024) * $longitude / 360;
 	}
 
 	public function getW() {
 		$longitude = normalizeLongitude($this->e);
-		return (pow(2,$mapLevel) * 1024) * $longitude / 360;
+		return (pow(2,$this->mapLevel) * 1024) * $longitude / 360;
 	}
 
 	public function getY() {
 		$latitude = normalizeLatitude($this->n);
-		return (pow(2,$mapLevel) * 1024) * $latitude / 180;
+		return (pow(2,$this->mapLevel) * 1024) * $latitude / 180;
 	}
 
 	public function getH() {
 		$latitude = normalizeLatitude($this->s);
-		return (pow(2,$mapLevel) * 1024) * $latitude / 180;
+		return (pow(2,$this->mapLevel) * 1024) * $latitude / 180;
 	}
 
 	private function normalizeLatitude($latitude) {
@@ -52,6 +52,6 @@ class Region {
 
 	private function normalizeLongitude($longitude) {
 		return $longitude + 180;
-	})
-
+	}
+}
 ?>
