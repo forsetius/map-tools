@@ -14,14 +14,15 @@ abstract class aImage
     /**
      * Set the graphics library to use
      *
-     * @param string $library Choose from 'Gd', 'Imagemagick', 'Gmagick'
+     * @param string $library Choose from 'Gd', 'Imagick', 'Gmagick'
      * @throws CapabilityException if any other choice is made
      * @return void
      */
     public static function setLibrary($library)
     {
         $library = \ucfirst(\strtolower($library));
-        if (! \in_array($library, array('Gd', 'Imagemagick', 'Gmagick')))
+        if (! \in_array($library, array('Gd', 'Imagick', 'Gmagick') ||
+            extension_loaded($library) !== true ))
             throw new CapabilityException("Unsupported image library: $library", CapabilityException::UNSUPPORTED_LIBRARY);
         
         static::$library = 'pl\forseti\maptools\\' . $library . 'Image';
@@ -73,30 +74,9 @@ abstract class aImage
             throw new FilesystemException("File $filename doesn't exist", FilesystemException::FILE_NOT_FOUND);
     }
     
-    /**
-     * Get the image resource
-     * @return resource
-     * @throws LogicException if no resource stored - either not created yet or already destroyed.
-     */
-    public function get() {
-        if (\is_null($this->image))
-            throw new LogicException('No resource stored.', LogicException::INVALID_RESOURCE);
-        
-        return $this->image;
-    }
+    abstract public function get();
     
-    /**
-     * Store the image resource in the object
-     * @param resource $imgRes
-     * @return void
-     * @throws LogicException if parameter is not Resource
-     */
-    public function set($imgRes) {
-        if (! \is_resource($imgRes))
-            throw new LogicException('Passed parameter is '. \gettype($imgRes) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
-        
-        $this->image = $imgRes;
-    }
+    abstract public function set($res);
     
     /**
      * Get the image's width
@@ -158,7 +138,6 @@ abstract class aImage
      * @param string $type Type: 'jpeg' or 'png'
      * @param integer $quality Image's quality (for Jpegs) or compression (PNGs). Range (1..9) - for Jpegs *10=quality. Default: 9 (max)
      * @return boolean True if success, false otherwise
-     * @throws \Exception if $type not in ('jpeg', 'png')
      * @throws \Exception if $quality not in range (1..9)
      */
     abstract public function write($path, $quality = 9);
@@ -170,7 +149,6 @@ abstract class aImage
     abstract public function destroy();
     
     public function __destruct() {
-        if (\is_resource($this->image))
             $this->destroy();
     }
 }
