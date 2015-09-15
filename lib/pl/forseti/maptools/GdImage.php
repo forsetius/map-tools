@@ -5,7 +5,8 @@
 namespace pl\forseti\maptools;
 
 use pl\forseti\reuse\LogicException;
-
+use pl\forseti\cli\SyntaxException;
+ 
 class GdImage extends aImage
 {
     public static function imageTypeFunction($extension) {
@@ -115,19 +116,26 @@ class GdImage extends aImage
 		
 	}
 
-	public static function dump($res, $path, $quality = 9)
+	public static function dump($res, $path, $isQuick = false, $isAlpha = false)
 	{
-	    $type = self::imageTypeFunction(\strtolower(\substr($path, \strrpos($path, '.')+1)));
-	    if ($type == 'jpeg') $quality *= 10;
-	    
-	    $saveFunc = 'image' . $type;
+	    $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
+	    if ($format == 'png') {
+	        $quality = ($isQuick) ? 1 : 0;
+	        \imagealphablending($res, !$isAlpha);
+	        \imagesavealpha($res, $isAlpha);
+	    } else {
+	        // JPEG
+	        if ($isAlpha) throw new LogicException('JPEG files does not support transparency');
+	        $quality = 95;
+	    }
+	    $saveFunc = 'image' . $format;
 	    $saveFunc($res, $path, $quality);
 	    imagedestroy($res);
 	}
 	
-    public function write($path, $quality = 9)
+    public function write($path, $isQuick = false, $isAlpha = false)
     {
-        GdImage::dump($this->image, $path, $quality);
+        GdImage::dump($this->image, $path, $isQuick, $isAlpha);
     }
 
     public function destroy()

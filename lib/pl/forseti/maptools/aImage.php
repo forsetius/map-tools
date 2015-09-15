@@ -125,22 +125,22 @@ abstract class aImage
     
     abstract public function copy($x, $y, $w, $h);
     
-    public static function dump($res, $path, $quality = 9)
+    public static function dump($res, $path, $isQuick = false, $isAlpha = false)
     {
         $class = self::$library;
-        $class::dump($res, $path, $quality);
+        $class::dump($res, $path, $isQuick, $isAlpha);
     }
     
     /**
      * Write image resource to specified file.
      * If you overload this method use parent::Load($filename) at the beginning of your method.
-     * @param string $filename Path and name of file to write
-     * @param string $type Type: 'jpeg' or 'png'
-     * @param integer $quality Image's quality (for Jpegs) or compression (PNGs). Range (1..9) - for Jpegs *10=quality. Default: 9 (max)
+     * @param string $path Path and name of file to write
+     * @param boolean $isQuick Should PNG be written without compressing
+     * @param boolean $isAlpha Should alpha transparency be used. Default: false
      * @return boolean True if success, false otherwise
-     * @throws \Exception if $quality not in range (1..9)
+     * @throws \Exception if $isQuick = true or $isAlpha=true but $path extension isn't 'png'
      */
-    abstract public function write($path, $quality = 9);
+    abstract public function write($path, $isQuick = false, $isAlpha = false);
     
     /**
      * Destroy the image resource and null it to free the memory
@@ -149,7 +149,7 @@ abstract class aImage
     abstract public function destroy();
     
     public function __destruct() {
-            $this->destroy();
+        $this->destroy();
     }
 }
  ?>
