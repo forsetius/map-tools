@@ -11,7 +11,7 @@ use pl\forseti\reuse\FilesystemException as FSe;
 $bm = Benchmark::getInstance();
 
 $cla = new ImageCLA();
-$cla->addArg(new Option('t', 1024));
+$cla->addArg(new Option('c', 1024));
 $cla->parse();
 extract($cla->postproc());
 
@@ -26,7 +26,7 @@ if ($cla->v) echo "Loaded $w x $h image\n";
 
 $bm->rec('Loaded image');
 // swapować za jednym zamachem, oba obrazki (źródłowy i wynikowy) zmieszczą się w pamięci bez bólu
-if ($cla->t === false) {
+if ($cla->c === false) {
     $destImg = aImage::make($w, $h);
     $bm->recMemory('After creation of target image');
     $srcImg->copyTo(0, 0, ceil($w/2), $h, $destImg->get(), floor($w/2));
@@ -45,8 +45,8 @@ if ($cla->t === false) {
     if (! mkdir($tempDir = 'temp'. date("YmdGis")))
         throw new FSe("Couldn't create add-on's folder $tempDir. Permission issue?", FSe::ACCESS_DENIED);
     
-    $nw = ceil($w/(2*$cla->t))*2; // ilość kawałków w poziomie. Niech mają max 1024px i niech ich będzie parzysta ilość
-    $nh = ceil($h/$cla->t);   // ilość kawałków w pionie
+    $nw = ceil($w/(2*$cla->c))*2; // ilość kawałków w poziomie. Niech mają max 1024px i niech ich będzie parzysta ilość
+    $nh = ceil($h/$cla->c);   // ilość kawałków w pionie
     
     $tileImg = aImage::make();
     $bm->recMemory('After creation of empty tile object');

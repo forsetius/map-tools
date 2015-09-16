@@ -2,6 +2,7 @@ Clips given image.
 
 <h1>SYNTAX</h1>
         <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;left-margin&gt;</u>] [-t <u>&lt;top-margin&gt;</u>] [-r <u>&lt;right-margin&gt;</u>] [-b <u>&lt;bottom-margin&gt;</u>] [-v]
+        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] -d
         <b>clip-image.php</b> --help
 
 <h1>SWITCHES</h1>
@@ -13,19 +14,28 @@ Clips given image.
                 If not provided, 'modified-' + <source-filename> is used.
 
         <b>-l</b> <u>&lt;left-margin&gt;</u>
-                Left margin
+                (optional) Left margin
 
         <b>-t</b> <u>&lt;top-margin&gt;</u>
-                Top margin
+                (optional) Top margin
 
         <b>-r</b> <u>&lt;right-margin&gt;</u>
-                Right margin
+                (optional) Right margin
 
         <b>-b</b> <u>&lt;bottom-margin&gt;</u>
-                Bottom margin
+                (optional) Bottom margin
+                
+        <b>-d</b> <u>&lt;detect&gt;</u>
+        		Attempt to automatically determine amount of pixels to cut.
+        		Intended to help in removing the border around the map. The algorithm 
+        		checks if all the pixels of leftmost column have the same color, 
+        		then checks the column to the right and so on until column is found 
+        		to contain another color. Same process is repeated on the right, then
+        		top and bottom. Number of same-color rows and columns is reported and
+        		script ends 
 
         <b>-v</b>
-                Verbose mode. The script will issue reports on its progress.
+                (optional) Verbose mode. The script will issue reports on its progress.
 
         <b>--help</b>
                 This help information.

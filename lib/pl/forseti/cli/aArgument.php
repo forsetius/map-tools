@@ -1,6 +1,22 @@
 <?php
 namespace pl\forseti\cli;
 
+/**
+ * Command-line argument.
+ * Every argument must have a value - either specified by the user
+ * when invoking the script or default one. There are three types of
+ * arguments:
+ * - Binary - a switch used to turn option on or off. Default: false (off)
+ * - Parameter - argument intended to provide value. Must have default used
+ * if user omits it. If user specifies it, they must provide value.
+ * - Option - the cross of above two. It's a switch that can enable some
+ * feature and user can optionally provide value. Default: false (off) and
+ * also another default must be provided in case if user specifies argument
+ * without value
+ *
+ * @author forseti
+ *
+ */
 abstract class aArgument
 {
     protected $name;
@@ -8,10 +24,9 @@ abstract class aArgument
 
     /**
      * Constructor.
-     * Defines new aArgument
+     * Defines new argument
      * @param string $name One-letter names are preferred. After parsing they will be referred like $claObject->v
-     * @param string|integer|boolean $value This parameter is used to denote if argument itself is required or optional. If required (denoted by $value=aArgument::REQ), it MUST be specified on the command line along with it's value (as spript cannot make assumption about the value). If optional, $value is the default value the script assumes if user haven't used the argument when invoking the script. In parsing that default value will be overwritten if given argument was passed in command line. Specify 'false' if argument is of 0-1 switch type and value is forbidden. Default: aArgument::REQ.
-     * @param string|int $optional Specifies if argument must, may or may not be followed by its value. aArgument::REQ is used if value is mandatory, aArgument::NO if value is forbidden. If argument may have value specified but it isn't mandatory then $optional's value is the default assumed if argument was used without specifying the value.
+     * @param string|integer|boolean $default Default value - used if user haven't specified the argument when calling the script
      */
     public function __construct($name, $default)
     {

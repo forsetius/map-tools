@@ -7,8 +7,8 @@ use pl\forseti\cli\ProgressBar;
 use pl\forseti\reuse\FilesystemException as FSe;
 
 $cla = new ImageCLA();
-$cla->addOption(new Parameter('a','Addon'));
-$cla->addOption(new Parameter('o','map?k'));
+$cla->addArg(new Parameter('a','Addon'));
+$cla->addArg(new Parameter('o','map?k'));
 $cla->parse();
 extract($cla->postproc());
 

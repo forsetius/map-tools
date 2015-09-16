@@ -78,7 +78,10 @@ class GdImage extends aImage
     public function crop($l, $t, $r, $b) {
         $w = $this->getWidth()-$l-$r;
         $h = $this->getHeight()-$t-$b;
-        $this->image = imagecrop($this->image, array('x'=>$l, 'y'=>$t, 'width'=>$w, 'height'=>$h));
+        $tempImg = imagecrop($this->image, array('x'=>$l, 'y'=>$t, 'width'=>$w, 'height'=>$h));
+        $this->destroy();
+        $this->set($tempImg);
+        $tempImg->destroy();
         
 /* older implementation
         $tempImg = imagecreatetruecolor($w, $h);

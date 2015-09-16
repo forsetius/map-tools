@@ -1,6 +1,12 @@
 <?php
 namespace pl\forseti\cli;
 
+/**
+ * Command-line switch used to enable some functionality.
+ * Can't have value specified. Default: false (disable functionality)
+ * @author forseti
+ *
+ */
 class Binary extends aArgument{
 
 

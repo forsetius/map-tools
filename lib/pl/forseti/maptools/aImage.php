@@ -95,7 +95,7 @@ abstract class aImage
      * Cropped image replaces original one.
      * @param integer $l Number of pixels to the left to cut
      * @param integer $t Number of pixels to the top to cut
-     * @param integer $r rumber of pixels to the right to cut
+     * @param integer $r Number of pixels to the right to cut
      * @param integer $b Number of pixels to the bottom to cut
      * @return void
      */
