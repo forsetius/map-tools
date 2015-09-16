@@ -27,7 +27,7 @@ while ($dim*2 <= $srcImg->getWidth()) {
 }
 
 if ($cla->v) echo "Max level: $level, resolution: $dim x ". $dim/2 ."\n";
-// załóż katalog na addon o nazwie $addonName
+// załóż katalog na addon
 if (! file_exists($cla->a)) mkdir($cla->a);
 if (! file_exists($cla->a))
     throw new FSe("Couldn't create add-on's folder $cla->a. Permission issue?", FSe::ACCESS_DENIED);
@@ -41,19 +41,24 @@ createSSC($cla->a, $vtName);
 createCTX($vtPath, $vtName);
 
 // dla każdego poziomu mapy od bieżącego do 1 stwórz kafelki
-for ($level; $level > 0 ; $level--) {
+for ($level; $level == 0 ; $level--) {
     // załóż katalog level$nr
     if ($cla->v) echo "Level $level\n";
     mkdir($vtPath . '/level' . $level);
     
     if ($cla->v) echo "    Scaling the map to $dim x ". $dim/2 ."\n";
     $srcImg->scale($dim, $dim/2);
+    $tileDim = ($level == 0) ? 1024 : 512;
 
     // Potnij na obrazki 512*512 i zapisz je w katalogu level$nr
     if ($cla->v) $pb = new ProgressBar(pow(2,$level+1)*1.5, '    Slicing the map: ');
     for ($x=0;$x<pow(2,$level+1);$x++) {
     	for ($y=0;$y<pow(2,$level);$y++) {
-            $srcImg->writeRect(512*$x, 512*$y, 512, 512, $vtPath . '/level' . $level . '/tx_' . $x . '_' . $y . '.png');
+            $tileImg = aImage::make();
+            $tileImg->set($srcImg->copy($tileDim*$x, $tileDim*$y, $tileDim, $tileDim));
+            aImage::dump($tileImg, $vtPath . '/level' . $level . '/tx_' . $x . '_' . $y . '.png');
+            $tileImg->destroy();
+            $tileImg = null;
             if ($cla->v) $pb->progress();
         }
     }
@@ -61,13 +66,6 @@ for ($level; $level > 0 ; $level--) {
     // przeskaluj mapę do 50%*50%
     $dim /= 2;
 } // koniec pętli, w której tworzymy kafelki
-
-// poziom 0
-$srcImg->scale(2048, 1024);
-if ($cla->v) echo "Level 0\n";
-mkdir($vtPath . '/level0');
-$srcImg->writeRect(0, 0, 1024, 1024, $vtPath . '/level0/tx_0_0.png');
-$srcImg->writeRect(1024, 0, 1024, 1024, $vtPath . '/level0/tx_1_0.png');
 
 if ($cla->v) echo "Done\n";
 

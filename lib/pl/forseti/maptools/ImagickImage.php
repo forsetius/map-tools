@@ -79,7 +79,7 @@ class ImagickImage extends aImage
         $tempImg = $this->image->getimageregion($w, $h, $x, $y);
         $destImg->compositeImage($tempImg, \Imagick::COMPOSITE_DEFAULT, $dx, $dy);
         $destImg->setImagePage(0, 0, 0, 0);
-        $tempImg->clear();
+        $tempImg->destroy();
     }
     
     public function copy($x, $y, $w, $h)
@@ -87,7 +87,7 @@ class ImagickImage extends aImage
         return $this->image->getimageregion($w, $h, $x, $y);
     }
 
-    public static function dump($res, $path, $isQuick = false, $isAlpha = false)
+    public static function dump($res, $path, $format, $isQuick = false, $isAlpha = false)
     {
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
         if ($format == 'png') {
@@ -128,7 +128,7 @@ class ImagickImage extends aImage
                 $this->imagick = $this->imagick->flattenImages();
             }
         } catch (\ImagickException $e) {
-            throw new RuntimeException('Flatten operation failed', $e->getCode(), $e);
+            throw new \RuntimeException('Flatten operation failed', $e->getCode(), $e);
         }
     }
 }

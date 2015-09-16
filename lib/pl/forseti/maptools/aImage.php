@@ -127,8 +127,10 @@ abstract class aImage
     
     public static function dump($res, $path, $isQuick = false, $isAlpha = false)
     {
+        $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
+        if ($isAlpha && $format == 'jpeg') throw new LogicException('JPEG files does not support transparency');
         $class = self::$library;
-        $class::dump($res, $path, $isQuick, $isAlpha);
+        $class::dump($res, $path, $format, $isQuick, $isAlpha);
     }
     
     /**

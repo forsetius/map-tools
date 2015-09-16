@@ -116,21 +116,18 @@ class GdImage extends aImage
 		
 	}
 
-	public static function dump($res, $path, $isQuick = false, $isAlpha = false)
+	public static function dump($res, $path, $format, $isQuick = false, $isAlpha = false)
 	{
-	    $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
 	    if ($format == 'png') {
 	        $quality = ($isQuick) ? 1 : 0;
 	        \imagealphablending($res, !$isAlpha);
 	        \imagesavealpha($res, $isAlpha);
 	    } else {
 	        // JPEG
-	        if ($isAlpha) throw new LogicException('JPEG files does not support transparency');
 	        $quality = 95;
 	    }
 	    $saveFunc = 'image' . $format;
 	    $saveFunc($res, $path, $quality);
-	    imagedestroy($res);
 	}
 	
     public function write($path, $isQuick = false, $isAlpha = false)

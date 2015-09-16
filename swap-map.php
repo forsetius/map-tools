@@ -68,7 +68,11 @@ if ($cla->t === false) {
             }
 
             $tileName = "$tempDir/tile-$x-$y.png";
-            aImage::dump($srcImg->copy($x*$tw, $y*$th, $tw, $th), $tileName, true);
+            $tileImg = aImage::make();
+            $tileImg->set($srcImg->copy($x*$tw, $y*$th, $tw, $th));
+            aImage::dump($tileImg, $tileName, true);
+            $tileImg->destroy();
+            $tileImg = null;
             if ($cla->v) $pb->progress();
         }
     }
