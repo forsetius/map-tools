@@ -91,6 +91,14 @@ abstract class aImage
     abstract public function getHeight();
     
     /**
+     * Get the color of pixel at (x,y) coordinates
+     * @param integer $x
+     * @param integer $y
+     * @return int
+     */
+    abstract public function getColorIndex($x, $y);
+    
+    /**
      * Crop the image by specified number of pixels.
      * Cropped image replaces original one.
      * @param integer $l Number of pixels to the left to cut

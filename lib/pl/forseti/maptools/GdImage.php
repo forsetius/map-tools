@@ -75,7 +75,23 @@ class GdImage extends aImage
         return imagesy($this->image);
     }
 
-    public function crop($l, $t, $r, $b) {
+    public function getColor($x, $y)
+    {
+        $color = $this->getColorIndex($x, $y);
+        return array('r'=>($color & 0xFF0000) >> 16,
+                     'g'=>($color & 0x00FF00) >> 8,
+                     'b'=>($color & 0x0000FF),
+                     'a'=>($color & 0x7F000000) >> 24
+                    );
+    }
+    
+    public function getColorIndex($x, $y)
+    {
+        return imagecolorat($this->image, $x, $y);
+    }
+    
+    public function crop($l, $t, $r, $b)
+    {
         $w = $this->getWidth()-$l-$r;
         $h = $this->getHeight()-$t-$b;
         $tempImg = imagecrop($this->image, array('x'=>$l, 'y'=>$t, 'width'=>$w, 'height'=>$h));

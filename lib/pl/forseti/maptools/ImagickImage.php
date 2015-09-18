@@ -54,6 +54,20 @@ class ImagickImage extends aImage
         return $this->image->getimageheight();
     }
     
+    public function getColor($x, $y)
+    {
+        $color = $this->getImagePixelColor($x, $y)->getColor(true);
+        return \array_walk($color, function(&$value, $key) {
+                $value = \round($value * 256);
+            });
+    }
+    
+    public function getColorIndex($x, $y)
+    {
+        $color = $this->getColor($x, $y);
+        return $color['a']*256*256*256 + $color['r']*256*256 + $color['g']*256 + $color['b'];
+    }
+    
     public function crop($l, $t, $r, $b)
     {
         $w = $this->getWidth()-$l-$r;

@@ -67,12 +67,9 @@ if ($cla->c === false) {
                 $th = $h - ($nh-1)*$th;                      // wysokość dolnych kafelków
             }
 
-            $tileName = "$tempDir/tile-$x-$y.png";
-            $tileImg = aImage::make();
             $tileImg->set($srcImg->copy($x*$tw, $y*$th, $tw, $th));
-            aImage::dump($tileImg, $tileName, true);
+            $tileImg->write("$tempDir/tile-$x-$y.png", true);
             $tileImg->destroy();
-            $tileImg = null;
             if ($cla->v) $pb->progress();
         }
     }
