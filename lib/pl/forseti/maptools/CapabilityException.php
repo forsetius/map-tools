@@ -1,6 +1,8 @@
 <?php
 namespace pl\forseti\maptools;
 
+use pl\forseti\reuse\aException;
+
 /**
  * Exception thrown if script attempted to use unsupported library, image format etc.
  * Often it means that the user made a typo when specyfying command line parameters.
@@ -8,18 +10,18 @@ namespace pl\forseti\maptools;
  * @author forseti
  *
  */
-class CapabilityException extends \Exception
+class CapabilityException extends aException
 {
-    const INCAPABLE = 200;
-    const UNSUPPORTED_LIBRARY = 201;
-    const UNSUPPORTED_FORMAT = 202;
-    const PARAM_OUT_OF_RANGE = 203;
+    const UNSUPPORTED_LIBRARY = 70;
+    const UNSUPPORTED_FORMAT = 71;
+    const REGISTRY_ISSUE = 72;
+    const CONFIG_ISSUE = 73;
 
-    public function __construct ($message = "", $code = self::INCAPABLE, \Exception $previous = NULL)
+    public function __construct ($message = "", $code, \Exception $previous = NULL)
     {
         $script = \basename($GLOBALS['argv'][0]);
         
-        echo "Incorrect option:\n$message.\nSee: `$script -- help` for more information\n";
+        echo "Incorrect option:\n$message.\nSee: `$script --help` for more information\n";
         parent::__construct($message, $code, $previous);
     }
 }

@@ -1,14 +1,15 @@
 <?php
 namespace pl\forseti\reuse;
 
-class FilesystemException extends \Exception
+class FilesystemException extends aException
 {
-    const FILESYSTEM_ISSUE = 400;
-    const FILE_NOT_FOUND = 401;
-    const ALREADY_EXISTS = 402;
-    const ACCESS_DENIED = 403;
+    const FILE_NOT_FOUND = 90;
+    const FILE_EXISTS = 91;
+    const ACCESS_DENIED = 92;
+    const LOCKED = 93;
+    const FOLDER_NOT_EMPTY = 94;
 
-    public function __construct ($message = "", $code = self::FILESYSTEM_ISSUE, \Exception $previous = NULL)
+    public function __construct ($message = "", $code, \Exception $previous = NULL)
     {
         echo "Filesystem issue:\n$message.\nPlease check the directory in which you run the script.\n";
         parent::__construct($message, $code, $previous);

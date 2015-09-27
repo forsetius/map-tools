@@ -14,10 +14,10 @@ class Option extends aArgument
 
     private $default;
     
-    public function __construct($name, $default)
+    public function __construct($name, $valueAbsent, $optionAbsent = false)
     {
-        parent::__construct( $name, false);
-        $this->default = $default;
+        parent::__construct( $name, $optionAbsent);
+        $this->default = $valueAbsent;
     }
     
     public function getNameV()

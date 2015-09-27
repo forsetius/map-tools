@@ -1,29 +1,44 @@
-Clips given image.
+Crops given image.
 
 <h1>SYNTAX</h1>
-        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;left-margin&gt;</u>] [-t <u>&lt;top-margin&gt;</u>] [-r <u>&lt;right-margin&gt;</u>] [-b <u>&lt;bottom-margin&gt;</u>] [-v]
-        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] -d
+        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;left-margin&gt;</u>] [-t <u>&lt;top-margin&gt;</u>] [-r <u>&lt;right-margin&gt;</u>] [-b <u>&lt;bottom-margin&gt;</u>] [-c[ tile-side-length]] [-v]
+        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] -d [-v]
         <b>clip-image.php</b> --help
-
+        
 <h1>SWITCHES</h1>
-        <b>-s</b> <u>&lt;source-filename&gt;</u>
-                (required) filename of source map
+        <b>-s</b> <u>&lt;source-map-filename&gt;</u>
+                Filename of source map
+                Required parameter.
 
         <b>-o</b> <u>&lt;output-filename&gt;</u>
-                (optional) a path and filename for output image
-                If not provided, 'modified-' + <source-filename> is used.
+                A path and filename for output image
+                Optional parameter -  if not provided, 
+                'modified-' + <source-filename> is used.
 
         <b>-l</b> <u>&lt;left-margin&gt;</u>
-                (optional) Left margin
+                Left margin.
+                Optional parameter - if not used, 0 margin on the side assumed.
 
         <b>-t</b> <u>&lt;top-margin&gt;</u>
-                (optional) Top margin
+                Top margin.
+                Optional parameter - if not used, 0 margin on the side assumed.
 
         <b>-r</b> <u>&lt;right-margin&gt;</u>
-                (optional) Right margin
+                Right margin.
+                Optional parameter - if not used, 0 margin on the side assumed.
 
         <b>-b</b> <u>&lt;bottom-margin&gt;</u>
-                (optional) Bottom margin
+                Bottom margin.
+                Optional parameter - if not used, 0 margin on the side assumed.
+                
+        <b>-c</b> <u>&lt;tile-side-length&gt;</u>
+                Crop the image by cutting it into smaller pieces and reassembling
+                Option. If not used, image is cropped in one piece (requires
+                more memory but is quicker). If used, by default the image is
+                cut into 1024x1024 px tiles - except on right and bottom border
+                where can be slimmer or lower if image's dimensions aren't
+                multiplies of 1024. Optional value can be specified if different 
+                tile dimensions are required.
                 
         <b>-d</b> <u>&lt;detect&gt;</u>
         		Attempt to automatically determine amount of pixels to cut.
@@ -34,11 +49,28 @@ Clips given image.
         		top and bottom. Number of same-color rows and columns is reported and
         		script ends 
 
-        <b>-v</b>
-                (optional) Verbose mode. The script will issue reports on its progress.
+         <b>-v</b>
+                Verbose mode. 
+                Switch. If used, the script will report its progress.  
 
         <b>--help</b>
-                This help information.
-
-<h1>NOTE</h1>
-        If <b>-l</b>, <b>-t</b>, <b>-r</b> or <b>-b</b> is not provided then 0 margin on that side is assumed.
+                Switch. Show this help information and quit.         
+                
+<h1>ARGUMENT TYPES</h1>:      
+		<b>Parameter</b>
+				Argument intended to provide value for specified purpose.
+				Can be required (it must be specified with its value)
+				or optional (if specified, value must be provided - if not
+				specified, default value will be assumed).
+		
+		<b>Switch</b>
+				Argument switching some feature or behaviour on.
+				If not specified, feature will remain off. If specified, 
+				no value may be given.
+		
+		<b>Option</b>
+				Argument switching some feature on that optionally allows
+				providing value. If not specified, feature will be off.
+				If specified with value, feature will be enabled and value
+				set modifying its operation. If specified without value,
+				feature will be enabled with default value.

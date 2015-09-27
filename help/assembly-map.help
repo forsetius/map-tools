@@ -1,29 +1,23 @@
-Scales given image.
+Assemblies one level of virtual texture into one big image.
 
 <h1>SYNTAX</h1>
-        <b>scale-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-w <u>&lt;width&gt;</u>] [-h <u>&lt;height&gt;</u>] [-v]
-        <b>scale-image.php</b> --help
+        <b>assembly-map.php</b> -s <u>&lt;source-map-folder&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;level&gt;</u>] [-v]
+        <b>assembly-map.php</b> --help
 
 <h1>SWITCHES</h1>:
         <b>-s</b> <u>&lt;source-map-filename&gt;</u>
-                Filename of source map
+                Path to source map's folder
                 Required parameter.
 
         <b>-o</b> <u>&lt;output-filename&gt;</u>
                 A path and filename for output image
-                Optional parameter -  if not provided, 
-                'modified-' + <source-filename> is used.
+                Optional parameter - if not provided, 
+                `map.png` is used.
 
-        <b>-w</b> <u>&lt;width&gt;</u>
-                Output image's width
-                Optional parameter - if not given, the image will be scaled down
-                to nearest power of 2. For example, image of <u>&lt;width&gt;</u>=10000px 
-                will be reduced to 8192px.
-
-        <b>-h</b> <u>&lt;height&gt;</u>
-                Output image's height
-                Optional parameter - if not given, the image will have 
-                <u>&lt;height&gt;</u> = <u>&lt;width&gt;</u> / 2
+        <b>-l</b> <u>&lt;level&gt;</u>
+                Virtual texture's level to assemble into one image
+                Optional parameter - if not given, the highest level
+                found will be used.
 
         <b>-v</b>
                 Verbose mode. 

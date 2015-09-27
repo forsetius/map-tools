@@ -1,6 +1,8 @@
 <?php
 namespace pl\forseti\cli;
 
+use pl\forseti\reuse\aException;
+
 /**
  * Exception thrown if command line parameters can't be correctly parsed.
  * Used to cover the cases strictly connected to syntactic correctness of
@@ -8,18 +10,19 @@ namespace pl\forseti\cli;
  * @author forseti
  *
  */
-class SyntaxException extends \Exception
+class SyntaxException extends aException
 {
-    const CLI_SYNTAX = 300;
-    const REQUIRED_PARAM = 301;
-    const REQUIRED_VALUE = 302;
-    const VALUE_TYPE = 303;
+    const BAD_SYNTAX = 90;
+    const REQUIRED_PARAM = 91;
+    const REQUIRED_VALUE = 92;
+    const VALUE_TYPE = 93;
+    const VALUE_OUT_OF_BOUNDS = 94;
         
-    public function __construct ($message = "", $code = self::CLI_SYNTAX, \Exception $previous = NULL)
+    public function __construct ($message = "", $code = self::BAD_SYNTAX, \Exception $previous = NULL)
     {
         $script = \basename($GLOBALS['argv'][0]);
 
-        echo "Invalid syntax: $message \nSee: `$script -- help` for more information\n";
+        echo "Invalid syntax: $message \nSee: `$script --help` for more information\n";
         parent::__construct($message, $code, $previous);
     }
 }

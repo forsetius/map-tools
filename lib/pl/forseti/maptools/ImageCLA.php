@@ -10,8 +10,8 @@ class ImageCLA extends CLI\CLA
 	public function __construct(array $options = array())
 	{
 		$this->addArg(new CLI\Parameter('s'));                     	// source file name
-        $this->addArg(new CLI\Parameter('o', 'modified-?'));        // output file name
-        $this->addArg(new CLI\Parameter('g', 'gd'));                // graphics library
+        $this->addArg(new CLI\Parameter('o', $GLOBALS['cfg']->defOutputImgName));        // output file name
+        $this->addArg(new CLI\Parameter('g', $GLOBALS['cfg']->defGfxLib));                // graphics library
         parent::__construct($options);
 	}
 	
@@ -24,7 +24,6 @@ class ImageCLA extends CLI\CLA
 		    $this->o = \str_replace('?', $this->s, $this->o);
 		
 		// graphics library: GD, ImageMagick czy GMagick
-		// TODO ImageMagick czy GMagick
 		aImage::setLibrary($this->g);
 		return $arr;
 	}

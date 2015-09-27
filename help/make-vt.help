@@ -9,22 +9,42 @@ This utility creates a Virtual Texture (VT) out of map provided.
         2. source map must have at least 1024px height
         3. it can be PNG or Jpeg type
 
-<h1>SWITCHES</h1>:
+<h1>ARGUMENTS</h1>:
         <b>-s</b> <u>&lt;source-map-filename&gt;</u>
-                (required) filename of source map
+                Filename of source map
+                Required parameter.
 
         <b>-a</b> <u>&lt;addon-name&gt;</u>
-                (optional) name of addon that will include the VT to be created.
-                If not provided, default 'Addon' is used
+                Name of addon that will include the VT to be created.
+                Optional parameter - if not provided, default 'Addon' is used.
 
         <b>-o</b> <u>&lt;output-texture-name&gt;</u>
-                (optional) name of VT within the addon
-                If not provided, default 'map?k' is used.
+                Name of Virtual Texture within the addon
+                Optional parameter -  if not provided, default 'map?k' is used.
                 If name contains ? character, it will be substituted with map size.
 
         <b>-v</b>
-                Verbose mode. The script will issue reports on its progress.
+                Verbose mode. 
+                Switch. If used, the script will report its progress.  
 
         <b>--help</b>
-                This help information.
+                Switch. Show this help information and quit.         
                 
+<h1>ARGUMENT TYPES</h1>:      
+		<b>Parameter</b>
+				Argument intended to provide value for specified purpose.
+				Can be required (it must be specified with its value)
+				or optional (if specified, value must be provided - if not
+				specified, default value will be assumed).
+		
+		<b>Switch</b>
+				Argument switching some feature or behaviour on.
+				If not specified, feature will remain off. If specified, 
+				no value may be given.
+		
+		<b>Option</b>
+				Argument switching some feature on that optionally allows
+				providing value. If not specified, feature will be off.
+				If specified with value, feature will be enabled and value
+				set modifying its operation. If specified without value,
+				feature will be enabled with default value.

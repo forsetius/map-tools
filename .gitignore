@@ -1,6 +1,7 @@
 info.txt
-test.php
 .project
 .buildpath
 doc/
 .settings/
+/region.php
+/map.php

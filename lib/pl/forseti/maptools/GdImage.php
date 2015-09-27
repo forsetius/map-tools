@@ -6,6 +6,7 @@ namespace pl\forseti\maptools;
 
 use pl\forseti\reuse\LogicException;
 use pl\forseti\cli\SyntaxException;
+use pl\forseti\reuse\ExternalDataException;
  
 class GdImage extends aImage
 {
@@ -54,13 +55,18 @@ class GdImage extends aImage
     
     public function create($w, $h)
     {
+        //TODO greyscale
         $this->set(imagecreatetruecolor($w, $h));
     }
     
     public function load($filename)
     {
         parent::load($filename);
-        $callFunc = 'imagecreatefrom' . self::imageTypeFunction(exif_imagetype($filename));
+        @$imgType = exif_imagetype($filename);
+        if ($imgType === false)
+            throw new ExternalDataException("Incorrect image file: `$filename`", ExternalDataException::INCORRECT_DATATYPE);
+        
+        $callFunc = 'imagecreatefrom' . self::imageTypeFunction($imgType);
 
         $this->set($callFunc('./'.$filename));
     }
@@ -135,8 +141,9 @@ class GdImage extends aImage
 		
 	}
 
-	public static function dump($res, $path, $format, $isQuick = false, $isAlpha = false)
+	public static function dump($res, $path, $isQuick = false, $isAlpha = false)
 	{
+	    $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
 	    if ($format == 'png') {
 	        $quality = ($isQuick) ? 1 : 0;
 	        \imagealphablending($res, !$isAlpha);

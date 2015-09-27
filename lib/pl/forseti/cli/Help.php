@@ -8,40 +8,40 @@ use pl\forseti\reuse\FilesystemException as FSe;
  */
 class Help
 {
-	public static function printTerm($sn) {
-		$help = self::getFile($sn);
-		foreach (getTermSubsts() as $tag=>$subst) {
-			$help = str_ireplace($tag, '\e['. $subst .'m', $help);
+	public static function printTerm() {
+		$help = self::getFile($GLOBALS['argv'][0]);
+		foreach (self::getTermSubsts() as $tag=>$subst) {
+			$help = str_ireplace($tag, $subst, $help);
 		}
-		echo $help . '\e[0m';
+		echo $help . "\e[0m\n";
 		exit;
 	}
-	
+
 	private static function getFile($sn) {
-		$helpFile = dirname($sn).'/help/'. substr(basename($sn),0,strripos($sn, '.php')) . '.help';
+		$helpFile = dirname($sn).'/help/'. substr(basename($sn),0,strripos(basename($sn), '.php')) . '.help';
 		if (file_exists($helpFile)) {
-			return include $helpFile;
+			return \file_get_contents("$helpFile");
 		} else throw new FSe("Help file `$helpFile` not found", FSe::FILE_NOT_FOUND);
 	}
 	
 	private static function getTermSubsts() {
 		return array(
-					'<b>'=>'\e[1m',
-					'</b>'=>'\e[21m',
-					'<i>'=>'\e[3m',
-					'</i>'=>'\e[23m',
-					'<u>'=>'\e[4m',
-					'</u>'=>'\e[24m',
-					'<code>'=>'\e[96m',
-					'</code>'=>'\e[39m',
-					'<cite>'=>'\e[37m',
-					'</cite>'=>'\e[39m',
-					'<h1>'=>'\e[93m\e[4m',
-					'</h1>'=>'\e[39m\e[24m',
-					'<h2>'=>'\e[1m\e[4m',
-					'</h2>'=>'\e[21m\e[24m',
-					'<h3>'=>'\e[4m',
-					'</h3>'=>'\e[24m',
+					'<b>'=>"\e[1m",
+					'</b>'=>"\e[21m",
+					'<i>'=>"\e[3m",
+					'</i>'=>"\e[23m",
+					'<u>'=>"\e[4m",
+					'</u>'=>"\e[24m",
+					'<code>'=>"\e[96m",
+					'</code>'=>"\e[39m",
+					'<cite>'=>"\e[37m",
+					'</cite>'=>"\e[39m",
+					'<h1>'=>"\e[93m\e[4m",
+					'</h1>'=>"\e[39m\e[24m",
+					'<h2>'=>"\e[1m\e[4m",
+					'</h2>'=>"\e[21m\e[24m",
+					'<h3>'=>"\e[4m",
+					'</h3>'=>"\e[24m",
 					'&gt;'=>'>',
 					'&lt;'=>'<',
 					);

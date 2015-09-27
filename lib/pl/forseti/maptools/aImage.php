@@ -20,12 +20,12 @@ abstract class aImage
      */
     public static function setLibrary($library)
     {
-        $library = \ucfirst(\strtolower($library));
-        if (! \in_array($library, array('Gd', 'Imagick', 'Gmagick') ||
-            extension_loaded($library) !== true ))
+        $library = \strtolower($library);
+        if (! \in_array($library, array('gd', 'imagick', 'gmagick')) ||
+            extension_loaded($library) !== true )
             throw new CapabilityException("Unsupported image library: $library", CapabilityException::UNSUPPORTED_LIBRARY);
         
-        static::$library = 'pl\forseti\maptools\\' . $library . 'Image';
+        static::$library = 'pl\forseti\maptools\\' . \ucfirst($library) . 'Image';
     }
     
     /**
@@ -71,7 +71,7 @@ abstract class aImage
      */
     public function load($filename) {
         if(! file_exists($filename))
-            throw new FilesystemException("File $filename doesn't exist", FilesystemException::FILE_NOT_FOUND);
+            throw new FilesystemException("File `$filename` doesn't exist", FilesystemException::FILE_NOT_FOUND);
     }
     
     abstract public function get();
@@ -136,7 +136,7 @@ abstract class aImage
     public static function dump($res, $path, $isQuick = false, $isAlpha = false)
     {
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
-        if ($isAlpha && $format == 'jpeg') throw new LogicException('JPEG files does not support transparency');
+        if ($isAlpha && $format == 'jpeg') throw new LogicException('JPEG files does not support transparency', LogicException::FAULTY_LOGIC);
         $class = self::$library;
         $class::dump($res, $path, $format, $isQuick, $isAlpha);
     }

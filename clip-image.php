@@ -1,6 +1,8 @@
-#!/usr/bin/php5
+#!/usr/bin/env php
 <?php
 namespace pl\forseti\maptools;
+require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
+
 use \pl\forseti\cli\Parameter;
 use pl\forseti\cli\Binary;
 use pl\forseti\cli\Option;
@@ -146,5 +148,6 @@ if ($cla->d === true) {
     
     if ($cla->v) echo "Done\n";
 }
+exit(0);
 
  ?>

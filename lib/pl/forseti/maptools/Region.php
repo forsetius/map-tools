@@ -1,7 +1,8 @@
 <?php
+namespace pl\forseti\maptools;
 
 class Region {
-	const DEFAULT_REGISTRY_FILE = '../registry.csv';
+	const DEFAULT_REGISTRY_FILE = 'registry.csv';
 
 	private $bodyRadius;
 	private $mapLevel;

@@ -8,12 +8,15 @@ namespace pl\forseti\reuse;
  * @author forseti
  *
  */
-class LogicException extends \Exception
+class LogicException extends aException
 {
-    const FAULTY_LOGIC = 100;
-    const BAD_METHOD_CALL = 101;
-    const METHOD_NOT_SUPPORTED = 102;
-    const INVALID_RESOURCE = 103;
+    const FAULTY_LOGIC = 1;
+    const BAD_METHOD_CALL = 64;
+    const METHOD_NOT_SUPPORTED = 65;
+    const INVALID_RESOURCE = 66;
+    const INVALID_TYPE = 67;
+    const ARGUMENT_OUT_OF_BOUNDS = 68;
+    const NOT_IMPLEMENTED = 69;
     
     public function __construct ($message = "", $code = self::FAULTY_LOGIC, \Exception $previous = NULL)
     {

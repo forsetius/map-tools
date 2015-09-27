@@ -4,6 +4,7 @@
  */
 namespace pl\forseti\maptools;
 
+use pl\forseti\reuse\LogicException;
 class ImagickImage extends aImage
 {
 
@@ -25,12 +26,14 @@ class ImagickImage extends aImage
     public function create($w, $h)
     {
         $img = new \Imagick();
-        $this->set($img->newImage($w, $h, 'none'));
+        $img->newImage($w, $h, 'none');
+        $this->set($img);
     }
  
     public function load($filename)
     {
         parent::load($filename);
+        self::imageTypeFunction(\strtolower(\pathinfo($filename, PATHINFO_EXTENSION)));
         $this->set(new \Imagick(realpath($filename)));
     }
     
@@ -39,8 +42,12 @@ class ImagickImage extends aImage
         return $this->image;
     }
     
-    public function set(\Imagick $res)
+    public function set($res)
     {
+        if (! ($res instanceof \Imagick))
+            throw new LogicException('Passed parameter is '. \gettype($res) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
+        
+        $this->destroy();
         $this->image = $res;
     }
     
@@ -101,7 +108,7 @@ class ImagickImage extends aImage
         return $this->image->getimageregion($w, $h, $x, $y);
     }
 
-    public static function dump($res, $path, $format, $isQuick = false, $isAlpha = false)
+    public static function dump(&$res, $path, $isQuick = false, $isAlpha = false)
     {
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
         if ($format == 'png') {
@@ -112,16 +119,33 @@ class ImagickImage extends aImage
             $format = 'jpeg';
             $compression = 95;
         }
-        
-        $res->image->setImageFormat($format);
-        $res->image->flatten();
-        $res->image->setImageCompressionQuality($compression);
+        echo "test1\n";
+        //$res->image->setFormat('PNG');
+        echo "test2\n";
+        //$res->image->flatten();
+        echo "test3\n";
+        //$res->image->setImageCompressionQuality($compression);
+        echo "test4\n";
         $res->image->writeimage($format .':'. $path);
+        echo "test5\n";
     }
     
     public function write($path, $isQuick = false, $isAlpha = false)
     {
-        ImagickImage::dump($this->image, $path, $isQuick, $isAlpha);
+        //ImagickImage::dump($this->image, $path, $isQuick, $isAlpha);
+        $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
+        if ($format == 'png') {
+            $format = ($isAlpha) ? 'png32' : 'png24';
+            $compression = ($isQuick) ? 10 : 5;
+        } else {
+            //JPEG
+            $format = 'jpeg';
+            $compression = 95;
+        }
+        $this->image->setFormat($format);
+        //TODO $this->image->flatten();
+        $this->image->setImageCompressionQuality($compression);
+        $this->image->writeimage($format .':'. $path);
     }
     
     public function destroy()

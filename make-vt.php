@@ -1,6 +1,7 @@
-#!/usr/bin/php5
+#!/usr/bin/env php
 <?php
 namespace pl\forseti\maptools;
+require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
 
 use pl\forseti\cli\Parameter;
 use pl\forseti\cli\ProgressBar;
@@ -8,7 +9,7 @@ use pl\forseti\reuse\FilesystemException as FSe;
 
 $cla = new ImageCLA();
 $cla->addArg(new Parameter('a','Addon'));
-$cla->addArg(new Parameter('o','map?k'));
+$cla->addArg(new Parameter('o', $GLOBALS['cfg']->defOutputMapName));
 $cla->parse();
 extract($cla->postproc());
 
@@ -56,7 +57,7 @@ for ($level; $level == 0 ; $level--) {
     	for ($y=0;$y<pow(2,$level);$y++) {
             $tileImg = aImage::make();
             $tileImg->set($srcImg->copy($tileDim*$x, $tileDim*$y, $tileDim, $tileDim));
-            aImage::dump($tileImg, $vtPath . '/level' . $level . '/tx_' . $x . '_' . $y . '.png');
+           //TODO aImage::dump($tileImg, $vtPath . '/level' . $level . '/tx_' . $x . '_' . $y . '.png');
             $tileImg->destroy();
             $tileImg = null;
             if ($cla->v) $pb->progress();
@@ -91,5 +92,6 @@ VirtualTexture
 EOF;
     file_put_contents($vtPath . '.ctx', $data);
 }
+exit(0);
 
  ?>

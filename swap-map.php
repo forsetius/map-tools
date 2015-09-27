@@ -1,4 +1,4 @@
-#!/usr/bin/php5
+#!/usr/bin/env php
 <?php
 namespace pl\forseti\maptools;
 require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
@@ -7,22 +7,24 @@ use pl\forseti\cli\ProgressBar;
 use pl\forseti\reuse\Benchmark;
 use pl\forseti\cli\Option;
 use pl\forseti\reuse\FilesystemException as FSe;
+use pl\forseti\reuse\Config;
 
+$cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
 $bm = Benchmark::getInstance();
 
 $cla = new ImageCLA();
-$cla->addArg(new Option('c', 1024));
+$cla->addArg(new Option('c', $cfg->defTileSize));
 $cla->parse();
 extract($cla->postproc());
 
-$bm->setEcho($cla->v);
+$bm->setEcho($cla->v == 3);
 $bm->rec('After parsing CLI, before loading image');
 
-if ($cla->v) echo "Loading image\n";
+if ($cla->v > 1) echo "Loading image\n";
 $srcImg = aImage::make($cla->s);
 $w = $srcImg->getWidth();
 $h = $srcImg->getHeight();
-if ($cla->v) echo "Loaded $w x $h image\n";
+if ($cla->v > 1) echo "Loaded $w x $h image\n";
 
 $bm->rec('Loaded image');
 // swapować za jednym zamachem, oba obrazki (źródłowy i wynikowy) zmieszczą się w pamięci bez bólu
@@ -51,7 +53,7 @@ if ($cla->c === false) {
     $tileImg = aImage::make();
     $bm->recMemory('After creation of empty tile object');
     
-    if ($cla->v) $pb = new ProgressBar($nw*$nh, '    Slicing the map: ');
+    if ($cla->v > 1) $pb = new ProgressBar($nw*$nh, '    Slicing the map: ');
     $bm->recMemory('After new ProgressBar');
     for ($x = 0; $x < $nw; $x++) {
         for ($y = 0; $y < $nh; $y++) {
@@ -70,7 +72,7 @@ if ($cla->c === false) {
             $tileImg->set($srcImg->copy($x*$tw, $y*$th, $tw, $th));
             $tileImg->write("$tempDir/tile-$x-$y.png", true);
             $tileImg->destroy();
-            if ($cla->v) $pb->progress();
+            if ($cla->v > 1) $pb->progress();
         }
     }
     $bm->recMemory("\nPo zapisaniu wszystkich kafelków");
@@ -80,7 +82,7 @@ if ($cla->c === false) {
     $bm->recMemory('After null on source object');
 
     $bm->rec('Reassembling');
-    if ($cla->v) $pb = new ProgressBar($nw*$nh, '    Reassembling swapped map: ');
+    if ($cla->v > 1) $pb = new ProgressBar($nw*$nh, '    Reassembling swapped map: ');
     $bm->recMemory('After new ProgressBar');
     $destImg = aImage::make($w, $h);
     $bm->recMemory('After creation of target image');
@@ -97,14 +99,14 @@ if ($cla->c === false) {
             
             $dy += $th;
             $tileImg->destroy();
-            if ($cla->v) $pb->progress();
+            if ($cla->v > 1) $pb->progress();
         }
         $dx += $tw;
     }
 
     $bm->recMemory('Bef null on tile object');
     $tileImg = null;
-    if ($cla->v) echo "\n";
+    if ($cla->v > 1) echo "\n";
 
     $bm->recMemory('After null on tile object');
     if (substr(strtolower(php_uname('s')),0,3) == 'win') {
@@ -115,8 +117,8 @@ if ($cla->c === false) {
     $bm->recMemory('After null on tile object');
 }
 
-$bm->rec('Writing');
+$bm->rec('Writing1');
 $destImg->write($cla->o);
 $bm->rec('Done');
-
+exit(0);
 ?>

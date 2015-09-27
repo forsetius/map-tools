@@ -10,7 +10,8 @@ class CLA
 
     public function __construct(array $args = array())
     {
-        $this->addArg(new Binary('v'));  	// verbose?
+        # verbosity: 0 - quiet, 1 - warnings only, 2 - info (verbose), 3 - debug (detailed time and memory)
+        $this->addArg(new Option('v', $GLOBALS['cfg']->defVerbosity));
         $this->addArg(new Binary('help'));// print help and exit
         $this->args = $args + $this->args;
     }
@@ -57,7 +58,7 @@ class CLA
     }
     
     public function postproc() {
-    	if ($this->help) Help::printTerm($GLOBALS['argv'][0]);
+    	if ($this->help) Help::printTerm();
     	
     	return array();
     }
