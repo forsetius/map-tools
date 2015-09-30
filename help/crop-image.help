@@ -1,9 +1,9 @@
 Crops given image.
 
 <h1>SYNTAX</h1>
-        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;left-margin&gt;</u>] [-t <u>&lt;top-margin&gt;</u>] [-r <u>&lt;right-margin&gt;</u>] [-b <u>&lt;bottom-margin&gt;</u>] [-c[ tile-side-length]] [-v]
-        <b>clip-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] -d [-v]
-        <b>clip-image.php</b> --help
+        <b>crop-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;left-margin&gt;</u>] [-t <u>&lt;top-margin&gt;</u>] [-r <u>&lt;right-margin&gt;</u>] [-b <u>&lt;bottom-margin&gt;</u>] [-c[ tile-side-length]] [-v]
+        <b>crop-image.php</b> -s <u>&lt;source-filename&gt;</u> [-o <u>&lt;output-filename&gt;</u>] -d [-v]
+        <b>crop-image.php</b> --help
         
 <h1>SWITCHES</h1>
         <b>-s</b> <u>&lt;source-map-filename&gt;</u>
