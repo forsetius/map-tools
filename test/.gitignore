@@ -1,2 +1,10 @@
 *.log
 swap-map/
+scale-image/
+clip-image/
+crop-image/
+merge-images/
+make-vt/
+assemble-image/
+map/
+region/

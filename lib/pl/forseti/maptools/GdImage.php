@@ -64,7 +64,7 @@ class GdImage extends aImage
         parent::load($filename);
         @$imgType = exif_imagetype($filename);
         if ($imgType === false)
-            throw new ExternalDataException("Incorrect image file: `$filename`", ExternalDataException::INCORRECT_DATATYPE);
+            throw new CapabilityException("Unsupported file type. Supported types: Jpeg and PNG.", CapabilityException::UNSUPPORTED_FORMAT);
         
         $callFunc = 'imagecreatefrom' . self::imageTypeFunction($imgType);
 
@@ -80,8 +80,12 @@ class GdImage extends aImage
     {
         return imagesy($this->image);
     }
-
-    public function getColor($x, $y)
+    
+    public function sampleColor($x, $y) {
+        return $this->getColorIndex($x, $y);
+    }
+    
+    public function getColorRGBA($x, $y)
     {
         $color = $this->getColorIndex($x, $y);
         return array('r'=>($color & 0xFF0000) >> 16,
@@ -103,7 +107,6 @@ class GdImage extends aImage
         $tempImg = imagecrop($this->image, array('x'=>$l, 'y'=>$t, 'width'=>$w, 'height'=>$h));
         $this->destroy();
         $this->set($tempImg);
-        $tempImg->destroy();
         
 /* older implementation
         $tempImg = imagecreatetruecolor($w, $h);

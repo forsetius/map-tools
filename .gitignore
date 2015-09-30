@@ -5,3 +5,4 @@ doc/
 .settings/
 /region.php
 /map.php
+*.log

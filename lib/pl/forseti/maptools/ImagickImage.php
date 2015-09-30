@@ -61,10 +61,14 @@ class ImagickImage extends aImage
         return $this->image->getimageheight();
     }
     
-    public function getColor($x, $y)
+    public function sampleColor($x, $y) {
+        return $this->image->getImagePixelColor($x, $y)->getColor(true);
+    }
+    
+    //TODO test, czy dobrze działa
+    public function getColorRGBA($x, $y)
     {
-        $color = $this->getImagePixelColor($x, $y)->getColor(true);
-        return \array_walk($color, function(&$value, $key) {
+        return \array_walk($this->sampleColor($x, $y), function(&$value, $key) {
                 $value = \round($value * 256);
             });
     }

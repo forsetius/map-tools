@@ -13,7 +13,9 @@ class CLA
         # verbosity: 0 - quiet, 1 - warnings only, 2 - info (verbose), 3 - debug (detailed time and memory)
         $this->addArg(new Option('v', $GLOBALS['cfg']->defVerbosity));
         $this->addArg(new Binary('help'));// print help and exit
-        $this->args = $args + $this->args;
+        foreach ($args as $arg) {
+            $this->addArg($arg);
+        }
     }
 
     public function addArg(aArgument $a)

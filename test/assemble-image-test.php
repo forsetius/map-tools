@@ -1,6 +1,6 @@
 <?php
 $tasks = array(
-    ['',90],
+['',90],
     ['-s "test.png" -g #g#',0],
     ['-s test.png -g #g#',0],
     ['-s test.jpg -g #g#',0],
@@ -17,16 +17,8 @@ $tasks = array(
     ['-s test.jpg -o',255],
     ['-s test.jpg -o *',255],
     ['-s test.jpg -o /',255],
-    ['-s test.png -o #g#_test_#i#.png -c -g #g#',0],
-    ['-s test.png -o #g#_test_#i#.png -c=1024 -g #g#',0],
-    ['-s test.png -o #g#_test_#i#.png -c=512 -g #g#',0],
-    ['-s test.png -o #g#_test_#i#.png -c=-512 -g #g#',255],
-    ['-s test.png -o #g#_test_#i#.png -c="512" -g #g#',255],
-    ['-s test.png -o #g#_test_#i#.png -c=error -g #g#',255],
     ['-s test1.png -o #g#_test_#i#.png -g #g#',0],
-    ['-s test1.png -o #g#_test_#i#.png -c -g #g#',0],
     ['-s test2.png -o #g#_test_#i#.png -g #g#',0],
-    ['-s test2.png -o #g#_test_#i#.png -c -g #g#',0],
     ['-s test.png -g #g# -v=0',0],
     ['-s test.png -g #g# -v',0],
     ['-s test.png --v=error',255],
@@ -38,5 +30,9 @@ $tasks = array(
     ['-s test.png --help',0],
     ['-s test.png --help -v',0],
     ['-s test.png --help error',255],
+    ['-s test.jpg -a test',0],
+    ['-s test.jpg -a',255],
+    ['-s test.jpg -a *',255],
+    ['-s test.jpg -a /',255],
 );
 ?>

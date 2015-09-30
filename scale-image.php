@@ -4,6 +4,11 @@ namespace pl\forseti\maptools;
 require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
 
 use \pl\forseti\cli\Option;
+use pl\forseti\reuse\Config;
+use pl\forseti\reuse\Benchmark;
+
+$cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
+$bm = Benchmark::getInstance();
 
 $cla = new ImageCLA();
 $cla->addArg(new Option('w', function() use (&$srcImg) {

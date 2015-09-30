@@ -7,7 +7,9 @@ use pl\forseti\cli\ProgressBar;
 use pl\forseti\reuse\Benchmark;
 use pl\forseti\cli\Parameter;
 use pl\forseti\reuse\ExternalDataException;
+use pl\forseti\reuse\Config;
 
+$cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
 $bm = Benchmark::getInstance();
 
 $cla = new ImageCLA();
@@ -47,6 +49,6 @@ $tileImg = null;
 
 $destImg->write($cla->o);
 $destImg->destroy();
-exit(0);
 
+exit(0);
 ?>

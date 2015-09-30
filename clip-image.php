@@ -8,6 +8,11 @@ use pl\forseti\cli\Binary;
 use pl\forseti\cli\Option;
 use pl\forseti\reuse\FilesystemException as FSe;
 use pl\forseti\cli\ProgressBar;
+use pl\forseti\reuse\Config;
+use pl\forseti\reuse\Benchmark;
+
+$cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
+$bm = Benchmark::getInstance();
 
 $options = array(
                 new Binary('d'),
@@ -15,7 +20,7 @@ $options = array(
                 new Parameter('t', 0),
                 new Parameter('r', 0),
                 new Parameter('b', 0),
-                new Option('c', 1024)
+                new Option('c',  $cfg->defTileSize)
                 );
 $cla = new ImageCLA($options);
 $cla->parse();
@@ -31,35 +36,35 @@ if ($cla->d === true) {
     if ($cla->v) echo "Detecting border\n";
     
     $l = 0;
-    $pc= $srcImg->getColorIndex(0, 0);
+    $pc= $srcImg->sampleColor(0, 0);
     for ($x=0;$x<$w;$x++) {
         for ($y=0;$y<$h;$y++) {
-            if ($pc != $srcImg->getColorIndex($x, $y)) break 2;
+            if ($pc != $srcImg->sampleColor($x, $y)) break 2;
         }
         $l++;
     }
     
     $r = 0;
-    $pc= $srcImg->getColorIndex($w-1, 0);
+    $pc= $srcImg->sampleColor($w-1, 0);
     for ($x=$w-1; $x>$l; $x--) {
         for ($y=0;$y<$h;$y++) {
-            if ($pc != $srcImg->getColorIndex($x, $y)) break 2;
+            if ($pc != $srcImg->sampleColor($x, $y)) break 2;
         }
         $r++;
     }
     
     $t = 0;
     $rm = $w-$r;
-    $pc= $srcImg->getColorIndex(0, 0);
+    $pc= $srcImg->sampleColor(0, 0);
     for ($y=0;$y<$h;$y++)  {
         for ($x=$l; $x<$rm; $x++) {
-            if ($pc != $srcImg->getColorIndex($x, $y)) break 2;
+            if ($pc != $srcImg->sampleColor($x, $y)) break 2;
         }
         $t++;
     }
 
     $b = 0;
-    $pc= $srcImg->getColorIndex($w-1, $h-1);
+    $pc= $srcImg->sampleColor($w-1, $h-1);
     for ($y=$h-1, $bm=$h-$t;$y<$bm;$y--)  {
         for ($x=$l; $x<$rm; $x++) {
             if ($pc != $srcImg->getColorIndex($x, $y)) break 2;

@@ -62,7 +62,7 @@ if ($cla->c === false) {
                 //Robimy tak, żeby nie ciąć pikseli na pół a żeby skrajne kafelki były równej szerokości
                 //(z dokładnością do 1px bo inaczej się nie da jeśli szerokość źródłowego obrazka ma nieparzystą ilość px
                 $tw = ($w - ($nw-2)*$tw)/2;                  // szerokość skrajnego kafelka
-                $tw = ($x == 0) ? floor($tw) : ceil($tw);    // szerokość lewych : prawych kafelków.
+                $tw = ($x == 0) ? ceil($tw) : floor($tw);    // szerokość lewych : prawych kafelków.
             }
             $th = ceil($h/$nh);
             if ($y == $nh) {
