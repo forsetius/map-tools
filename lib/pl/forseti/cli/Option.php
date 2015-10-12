@@ -20,18 +20,13 @@ class Option extends aArgument
         $this->default = $valueAbsent;
     }
     
-    public function getNameV()
-    {
-        return $this->name . '::';
-    }
-    
     public function setValue($val)
     {
-        $this->value = ($val === false) ? $this->default : $val;
-    }
-    
-    public function isRequired()
-    {
-        return false;
+        if (\is_bool($val)) {
+            $this->value = $this->default;
+        } else {
+            $this->validate($val);
+            $this->value = $val;
+        }
     }
 }

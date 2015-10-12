@@ -12,9 +12,22 @@ use pl\forseti\reuse\Config;
 $cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
 $bm = Benchmark::getInstance();
 
-$cla = new ImageCLA();
-$cla->addArg(new Option('c', $cfg->defTileSize));
-$cla->parse();
+function setupCLA()
+{
+    $c = new Option('c', $GLOBALS['cfg']->defTileSize);
+    $c->setValid(['class'=>'uint','min'=>64])->setAlias('cut');
+    $c->setHelp('tile-size', <<<EOH
+                Swap halves of the image by cutting it into smaller pieces
+                and reassembling swapped afterwards.
+                Option. If not used, image is swapped in one piece (requires
+                more memory but is quicker). If used, by default the image is
+                cut into tiles not bigger than 1024x1024 px. Optional value
+                can be specified if different tile dimensions are required.
+EOH
+    );
+}
+
+$cla = (new ImageCLA())->parse();
 extract($cla->postproc());
 
 $bm->setEcho($cla->v == 3);
@@ -44,7 +57,7 @@ if ($cla->c === false) {
     
 // pokroić na parzystą w poziomie ilość mniejszych kawałków i w drugim kroku kopiować je na obrazek wynikowy
 } else {
-    if (! mkdir($tempDir = 'temp'. date("YmdGis")))
+    if (! mkdir($tempDir = 'temp'. date("YmdHis")))
         throw new FSe("Couldn't create add-on's folder $tempDir. Permission issue?", FSe::ACCESS_DENIED);
     
     $nw = ceil($w/(2*$cla->c))*2; // ilość kawałków w poziomie. Niech mają max 1024px i niech ich będzie parzysta ilość

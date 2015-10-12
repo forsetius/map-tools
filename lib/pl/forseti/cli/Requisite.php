@@ -8,17 +8,18 @@ namespace pl\forseti\cli;
  * @author forseti
  *
  */
-class Parameter extends aArgument
+class Requisite extends aArgument
 {
-    const REQ = '#REQ';
-    
-    public function __construct($name, $default)
+    public function __construct($name, $default = null)
     {
         parent::__construct($name, $default);
     }
 
     public function getValue()
     {
+        if ($this->value === null)
+            throw new SyntaxException('Required value for parameter "'. $this->name .'" not supplied', SyntaxException::REQUIRED_VALUE);
+        
         return $this->value;
     }
 }

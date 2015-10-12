@@ -13,7 +13,7 @@ $capabilities = array(
 $connections = array();
 
 $defaults = array(
-    'OutputImgName' => 'modified-?',
+    'OutputImgName' => '../modified-?',
     'OutputMapName' => 'map?k',
     'GfxLib' => 'gd',
     'TileSize' =>   1024,

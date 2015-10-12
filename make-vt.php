@@ -12,6 +12,8 @@ use pl\forseti\reuse\Benchmark;
 $cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
 $bm = Benchmark::getInstance();
 
+
+
 $cla = new ImageCLA();
 $cla->addArg(new Parameter('a','Addon'));
 $cla->addArg(new Parameter('o', $GLOBALS['cfg']->defOutputMapName));

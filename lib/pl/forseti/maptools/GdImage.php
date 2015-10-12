@@ -107,24 +107,12 @@ class GdImage extends aImage
         $tempImg = imagecrop($this->image, array('x'=>$l, 'y'=>$t, 'width'=>$w, 'height'=>$h));
         $this->destroy();
         $this->set($tempImg);
-        
-/* older implementation
-        $tempImg = imagecreatetruecolor($w, $h);
-        imagecopy($tempImg, $this->image, 0, 0, $l, $t, $w, $h);
-        $this->image = $tempImg;
- */
     }
     
     public function scale($w, $h)
     {
-        $interpolation =  ($w > $this->getWidth()) ? IMG_BICUBIC_FIXED : IMG_SINC; // IMG_GENERALIZED_CUBIC, IMG_QUADRATIC
-        $this->image = imagescale($this->image, $w, $h, $interpolation);
-        
-/* older implementation
-        $tempImg = imagecreatetruecolor($w, $h);
-        imagecopyresampled($tempImg, $this->image, 0, 0, 0, 0, $w, $h, $this->getWidth(), $this->getHeight());
-        $this->image = $tempImg;
- */
+        // TODO: non-default interpolation options cause segfault $interpolation =  ($w > $this->getWidth()) ? IMG_BICUBIC_FIXED : IMG_SINC; // IMG_GENERALIZED_CUBIC, IMG_QUADRATIC
+        $this->image = imagescale($this->image, $w, $h); //, IMG_CATMULLROM); // core dump with non-default interpolation modes TODO: GD fault or mine?
     }
 
     public function copyTo($x, $y, $w, $h, $destImg, $dx = 0, $dy = 0)

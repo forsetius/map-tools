@@ -12,11 +12,11 @@ use pl\forseti\reuse\aException;
  */
 class SyntaxException extends aException
 {
-    const BAD_SYNTAX = 90;
-    const REQUIRED_PARAM = 91;
-    const REQUIRED_VALUE = 92;
-    const VALUE_TYPE = 93;
-    const VALUE_OUT_OF_BOUNDS = 94;
+    const BAD_SYNTAX = 80;
+    const REQUIRED_VALUE = 81;
+    const INVALID_VALUE = 82;
+    const VALUE_OUT_OF_BOUNDS = 83;
+    const SUPERFLUOUS_VALUE = 84;
         
     public function __construct ($message = "", $code = self::BAD_SYNTAX, \Exception $previous = NULL)
     {

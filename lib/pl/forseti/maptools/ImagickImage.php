@@ -75,7 +75,7 @@ class ImagickImage extends aImage
     
     public function getColorIndex($x, $y)
     {
-        $color = $this->getColor($x, $y);
+        $color = $this->sampleColor($x, $y);
         return $color['a']*256*256*256 + $color['r']*256*256 + $color['g']*256 + $color['b'];
     }
     
@@ -89,10 +89,10 @@ class ImagickImage extends aImage
     public function scale($w, $h)
     {
         if ($w > $this->getWidth()) {
-            $interpolation = FILTER_MITCHELL;
+            $interpolation = \Imagick::FILTER_MITCHELL;
             $blur = 1.1;
         } else {
-            $interpolation = FILTER_LANCZOS;
+            $interpolation = \Imagick::FILTER_LANCZOS;
             $blur = 0.9;
         }
 
@@ -112,6 +112,7 @@ class ImagickImage extends aImage
         return $this->image->getimageregion($w, $h, $x, $y);
     }
 
+    //TODO deprecated
     public static function dump(&$res, $path, $isQuick = false, $isAlpha = false)
     {
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
@@ -136,7 +137,6 @@ class ImagickImage extends aImage
     
     public function write($path, $isQuick = false, $isAlpha = false)
     {
-        //ImagickImage::dump($this->image, $path, $isQuick, $isAlpha);
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
         if ($format == 'png') {
             $format = ($isAlpha) ? 'png32' : 'png24';
@@ -147,7 +147,7 @@ class ImagickImage extends aImage
             $compression = 95;
         }
         $this->image->setFormat($format);
-        //TODO $this->image->flatten();
+        $this->flatten();
         $this->image->setImageCompressionQuality($compression);
         $this->image->writeimage($format .':'. $path);
     }
@@ -164,13 +164,13 @@ class ImagickImage extends aImage
          * @see https://github.com/mkoppanen/imagick/issues/45
          */
         try {
-            if (method_exists($this->imagick, 'mergeImageLayers') && defined('Imagick::LAYERMETHOD_UNDEFINED')) {
-                $this->imagick = $this->imagick->mergeImageLayers(\Imagick::LAYERMETHOD_UNDEFINED);
-            } elseif (method_exists($this->imagick, 'flattenImages')) {
-                $this->imagick = $this->imagick->flattenImages();
+            if (method_exists($this->image, 'mergeImageLayers') && defined('Imagick::LAYERMETHOD_UNDEFINED')) {
+                $this->imagick = $this->image->mergeImageLayers(\Imagick::LAYERMETHOD_UNDEFINED);
+            } elseif (method_exists($this->image, 'flattenImages')) {
+                $this->imagick = $this->image->flattenImages();
             }
         } catch (\ImagickException $e) {
-            throw new \RuntimeException('Flatten operation failed', $e->getCode(), $e);
+            throw new \LogicException('Flatten operation failed', LogicException::FAULTY_LOGIC, $e);
         }
     }
 }
