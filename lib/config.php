@@ -1,4 +1,5 @@
 <?php
+
 $capabilities = array(
     'GfxLibs' => array(
         'gd',
@@ -13,11 +14,12 @@ $capabilities = array(
 $connections = array();
 
 $defaults = array(
-    'OutputImgName' => '../modified-?',
-    'OutputMapName' => 'map?k',
+    'OutputImgName' => "modified-?",
+    'OutputMapName' => "map?k.png",
     'GfxLib' => 'gd',
     'TileSize' =>   1024,
     'CutToTiles' => false,
     'Verbosity' => 2,
 );
+echo '';
  ?>

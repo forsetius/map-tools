@@ -23,12 +23,14 @@ abstract class aArgument
     protected $name;
     protected $alias;
     protected $value;
+    protected $transform;
     protected $valid = array();
     protected $help;
     
     static protected $classes = array(
         'filepath' => '~^([a-zA-Z]:)?[\w \-\.()\\/]+$~',
         'uint'     => '/^\d*$/',
+        'alnum'    => '[[:alnum:]_]'
     );
 
     /**
@@ -41,6 +43,7 @@ abstract class aArgument
     {
         $this->name = $name;
         $this->value = $default;
+        $this->transform = null;
     }
 
     public function setValid(array $valid)
@@ -71,14 +74,27 @@ abstract class aArgument
     
     public function getValue()
     {
+        if (! is_null($this->transform)) {
+            $closure = $this->transform;
+            $this->value = $closure($this->value);
+            $this->validate($this->value);
+        }
+        
         return $this->value;
     }
     
     public function setValue($val)
     {
-        $this->validate($val);
+        if (is_null($this->transform))
+            $this->validate($val);
+        
     	$this->value = $val;
     	return $this;
+    }
+
+    public function setTransform(\Closure $c) {
+        $this->transform = $c;
+        return $this;
     }
     
     public function getHelp()
@@ -102,7 +118,7 @@ abstract class aArgument
         $this->help = ['param'=>$paramName, 'desc'=>$help];
         return $this;
     }
-
+    
     protected function validate($val) {
         if (!empty($this->valid)) {
             if (\array_key_exists('class', $this->valid)) {

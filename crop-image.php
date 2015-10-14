@@ -189,7 +189,7 @@ if ($cla->d === true) {
         $destImg->destroy();
     }
     
-    if ($cla->v < 1) echo "Done\n";
+    if ($cla->v > 1) echo "Done\n";
 }
 
 exit(0);

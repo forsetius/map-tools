@@ -10,9 +10,9 @@ namespace pl\forseti\cli;
  */
 class Requisite extends aArgument
 {
-    public function __construct($name, $default = null)
+    public function __construct($name)
     {
-        parent::__construct($name, $default);
+        parent::__construct($name, null);
     }
 
     public function getValue()
@@ -20,6 +20,6 @@ class Requisite extends aArgument
         if ($this->value === null)
             throw new SyntaxException('Required value for parameter "'. $this->name .'" not supplied', SyntaxException::REQUIRED_VALUE);
         
-        return $this->value;
+        return parent::getValue();
     }
 }

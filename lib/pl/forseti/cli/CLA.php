@@ -63,8 +63,6 @@ EOH
             $allowedArgs[$argName] = $arg;
             
             foreach ((array) $arg->getAlias() as $alias) {
-                if (\array_key_exists($alias, $allowedArgs))
-                    throw new LogicException("Duplicated argument `$alias`", LogicException::FAULTY_LOGIC);
                 $allowedArgs[$alias] = $arg;
             }
         }
@@ -82,7 +80,7 @@ EOH
                         $allowedArgs[$argName]->setValue($GLOBALS['argv'][$i+1]);
                         $i+=2;
                     }
-                } else throw new SyntaxException("Unexpected option `{$arg->getName()}`", SyntaxException::BAD_SYNTAX);
+                } else throw new SyntaxException("Unexpected option `$argName`", SyntaxException::BAD_SYNTAX);
             } else throw new SyntaxException("Bad syntax", SyntaxException::BAD_SYNTAX);
         }
         

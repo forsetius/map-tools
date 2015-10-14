@@ -10,15 +10,8 @@ namespace pl\forseti\cli;
  */
 class Parameter extends aArgument
 {
-    const REQ = '#REQ';
-    
     public function __construct($name, $default)
     {
         parent::__construct($name, $default);
-    }
-
-    public function getValue()
-    {
-        return $this->value;
     }
 }

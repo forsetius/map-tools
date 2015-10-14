@@ -12,7 +12,7 @@ namespace pl\forseti\cli;
 class Option extends aArgument
 {
 
-    private $default;
+    protected $default;
     
     public function __construct($name, $valueAbsent, $optionAbsent = false)
     {
@@ -25,8 +25,11 @@ class Option extends aArgument
         if (\is_bool($val)) {
             $this->value = $this->default;
         } else {
-            $this->validate($val);
+            if (is_null($this->transform))
+                $this->validate($val);
+            
             $this->value = $val;
         }
+        return $this;
     }
 }

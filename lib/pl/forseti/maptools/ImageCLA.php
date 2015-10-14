@@ -13,8 +13,25 @@ class ImageCLA extends CLI\CLA
 	    $s->setValid(['class'=>'filepath'])->setAlias('source');
 	    $s->setHelp('source-path', 'Path and filename to source image');
 	    
+	    $outputName = function($val)
+	    {
+	        $s = $GLOBALS['cla']->s;
+	        if (\strpos($val, '?') !== false) {
+	            $out = \pathinfo($val, PATHINFO_DIRNAME);
+	            if (! empty($out)) $out .= DIRECTORY_SEPARATOR;
+	            $out .= \str_replace('?', \pathinfo($s, PATHINFO_FILENAME), \pathinfo($val, PATHINFO_FILENAME)) .'.';
+	            if (\strpos(\substr($val,\strrpos($val,DIRECTORY_SEPARATOR)), '.') === false) {
+	                $out .= \pathinfo($s, PATHINFO_EXTENSION);
+	            } else {
+	                $out .= \pathinfo($val, PATHINFO_EXTENSION);
+	            }
+	            return $out;
+	        }
+	        return $val;
+	    };
+	    
 	    $o = new CLI\Parameter('o', $GLOBALS['cfg']->defOutputImgName);
-	    $o->setValid(['class'=>'filepath'])->setAlias('output');
+	    $o->setValid(['class'=>'filepath'])->setAlias('output')->setTransform($outputName);
 	    $o->setHelp('output-path', 'Path and filename to output image');
 	    
 	    $g = new CLI\Parameter('g', $GLOBALS['cfg']->defGfxLib);
@@ -34,18 +51,6 @@ EOH
 	public function postproc() {
 		$arr = parent::postproc();
 		
-		// output file name: '?' zamienia na nazwę pliku źródłowego
-		if (\strpos($this->o, '?') !== false) {
-		    $out = \pathinfo($this->o, PATHINFO_DIRNAME);
-		    if (! empty($out)) $out .= DIRECTORY_SEPARATOR;
-		    $out .= \str_replace('?', \pathinfo($this->s, PATHINFO_FILENAME), \pathinfo($this->o, PATHINFO_FILENAME)) .'.';
-		    if (\strpos(\substr($this->o,\strrpos($this->o,DIRECTORY_SEPARATOR)), '.') === false) {
-		        $out .= \pathinfo($this->s, PATHINFO_EXTENSION);
-		    } else {
-		        $out .= \pathinfo($this->o, PATHINFO_EXTENSION);
-		    }
-		    $this->o = $out;
-		}
 		// graphics library: GD, ImageMagick czy GMagick
 		aImage::setLibrary($this->g);
 		return $arr;
