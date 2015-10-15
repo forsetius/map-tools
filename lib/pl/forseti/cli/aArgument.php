@@ -28,9 +28,9 @@ abstract class aArgument
     protected $help;
     
     static protected $classes = array(
-        'filepath' => '~^([a-zA-Z]:)?[\w \-\.()\\/]+$~',
-        'uint'     => '/^\d*$/',
-        'alnum'    => '[[:alnum:]_]'
+        'filepath' => '~^([a-zA-Z]:)?[\w \-\.()\\/?]+$~',
+        'uint'     => '/^[\d?]+$/',
+        'alnum'    => '/[[:alnum:]_?]+/'
     );
 
     /**

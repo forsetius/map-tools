@@ -1,5 +1,5 @@
 <?php
-namespace pl\forseti\cli;
+namespace pl\forseti\reuse;
 
 use pl\forseti\reuse\FilesystemException as FSe;
 

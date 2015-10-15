@@ -14,24 +14,24 @@ $bm = Benchmark::getInstance();
 
 function setupCLA()
 {
-    $a = new Parameter('a','Addon');
-    $a->setValid(['class'=>'alnum'])->setAlias('addon');
-    $a->setHelp('addon-name', <<<EOH
+    $o = new Parameter('o','Addon');
+    $o->setValid(['class'=>'filepath'])->setAlias('addon');
+    $o->setHelp('output-addon-name', <<<EOH
                 Name of addon that will include the VT to be created.
                 Optional parameter - if not provided, default 'Addon' is used.
 EOH
     );
     
-    $o = new Parameter('o', $GLOBALS['cfg']->defOutputMapName);
-    $o->setValid(['class'=>'filepath'])->setAlias('output');
-    $o->setHelp('output-texture', <<<EOH
+    $t = new Parameter('t', $GLOBALS['cfg']->defOutputTxName);
+    $t->setValid(['class'=>'alnum'])->setAlias('output');
+    $t->setHelp('texture-name', <<<EOH
                 Name of Virtual Texture within the addon
-                Optional parameter -  if not provided, default '{$GLOBALS['cfg']->defOutputMapName}' is used.
+                Optional parameter -  if not provided, default '{$GLOBALS['cfg']->defOutputTxName}' is used.
                 If name contains ? character, it will be substituted with map size.
 EOH
     );
     
-    return [$a, $o];
+    return [$t, $o];
 }
 
 $cla = (new ImageCLA(setupCLA()))->parse();
@@ -57,21 +57,28 @@ while ($dim*2 <= $w) {
 if ($cla->v > 1) echo "Max level: $level, resolution: $dim x ". $dim/2 ."\n";
 
 // załóż katalog na addon
-if (! file_exists($cla->a)) mkdir($cla->a);
-if (! file_exists($cla->a))
-    throw new FSe("Couldn't create add-on's folder $cla->a. Permission issue?", FSe::ACCESS_DENIED);
+if (! file_exists($cla->o)) {
+    mkdir($cla->o);
+    if (! file_exists($cla->o)) {
+        throw new FSe("Couldn't create add-on's folder $cla->o. Permission issue?", FSe::ACCESS_DENIED);
+    }
+}
 
 // załóż podkatalogi textures/hires/map$level/
-$vtName = str_replace('?', $dim/1024 , $cla->o);
-$vtPath = $cla->a . '/textures/hires/' . $vtName;
-if ($cla->v > 1) echo "Creating folders in $vtPath\n";
+$ds = DIRECTORY_SEPARATOR;
+$vtPath = $cla->o . "{$ds}textures{$ds}hires{$ds}" . $cla->t;
+if ($cla->v > 1) echo "Creating folders in $cla->t\n";
+
+if (file_exists($vtPath))
+    throw new FSe("Texture folder $vtPath already exists.", FSe::FILE_EXISTS);
+    
 mkdir($vtPath, 0777, true);
-createSSC($cla->a, $vtName);
-createCTX($vtPath, $vtName);
+createSSC($cla->o, $cla->t);
+createCTX($vtPath, $cla->t);
 
 // dla każdego poziomu mapy od bieżącego do 1 stwórz kafelki
 $tileImg = aImage::make();
-for ($level; $level == 0 ; $level--) {
+while ($level > -1) {
     if ($cla->v > 1) echo "Level $level\n";
     mkdir($vtPath . '/level' . $level);
     
@@ -79,8 +86,8 @@ for ($level; $level == 0 ; $level--) {
     $srcImg->scale($dim, $dim/2);
     $tileDim = ($level == 0) ? 1024 : 512;
 
-    // Potnij na obrazki 512*512 i zapisz je w katalogu level$nr
-    if ($cla->v > 1) $pb = new ProgressBar(pow(2,$level+1)*1.5, '    Slicing the map: ');
+    // Potnij na obrazki 512*512 i zapisz je w katalogu level$snr
+    if ($cla->v > 1) $pb = new ProgressBar(pow(2,2*$level+1), '    Slicing the map: ');
     
     for ($x=0;$x<pow(2,$level+1);$x++) {
     	for ($y=0;$y<pow(2,$level);$y++) {
@@ -92,6 +99,8 @@ for ($level; $level == 0 ; $level--) {
 
     // przeskaluj mapę do 50%*50%
     $dim /= 2;
+    $level--;
+    if ($cla->v > 1) echo "\n\n";
 } // koniec pętli, w której tworzymy kafelki
 
 $tileImg->destroy();
@@ -106,7 +115,7 @@ AltSurface "$vtName" "Sol/???"
 	Texture "$vtName.ctx"
 }
 EOF;
-    file_put_contents($addomName . '/' . $addomName . '.ssc', $data);
+    file_put_contents($addomName . '/' . \pathinfo($addomName, PATHINFO_FILENAME) . '.ssc', $data);
 }
 
 function createCTX($vtPath, $vtName) {

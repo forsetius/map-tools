@@ -2,6 +2,7 @@
 namespace pl\forseti\cli;
 
 use pl\forseti\reuse\LogicException;
+use pl\forseti\reuse\Help;
 /**
  * Command Line Arguments
  */
@@ -23,10 +24,13 @@ Verbosity level:
 EOH
         );
         
+        $version = new Flag('version');
+        $version->setHelp('',"Print this script suite's version");
+        
         $help = new Flag('help');
         $help->setHelp('',"Print this help");
 
-        $this->addArgs(array_merge([$v, $help], $args));
+        $this->addArgs(array_merge([$v, $version, $help], $args));
     }
 
     public function addArg(aArgument $arg)
@@ -101,7 +105,10 @@ EOH
     public function postproc()
     {
     	if ($this->help) Help::printTerm($GLOBALS['argv'][0]);
-    	
+    	if ($this->version) {
+    	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . $GLOBALS['cfg']->appVersion . "\n";
+    	    exit(0);
+    	}
     	return array();
     }
     

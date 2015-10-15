@@ -7,6 +7,7 @@ namespace pl\forseti\reuse;
 use pl\forseti\maptools\CapabilityException;
 class Config
 {
+    protected $app = array();
     protected $cap = array();
     protected $con = array();
     protected $def = array();
@@ -17,6 +18,7 @@ class Config
             throw new FilesystemException("Config file `$configFile` not found", FilesystemException::FILE_NOT_FOUND);
         
         require_once $configFile;
+        $this->app = $app;
         $this->cap = $capabilities;
         $this->con = $connections;
         $this->def = $defaults;
@@ -24,14 +26,14 @@ class Config
     
     public function __get($key)
     {
-        $prefix = \substr($key, 0, 3);
-        if (! isset($this->$prefix))
-            throw new CapabilityException("No such configuration prefix `$prefix`", CapabilityException::CONFIG_ISSUE);
+        $pref = \substr($key, 0, 3);
+        if (! isset($this->$pref))
+            throw new CapabilityException("No such configuration prefix `$pref`", CapabilityException::CONFIG_ISSUE);
         
-        $prefix = $this->$prefix;
+        $prefix = $this->$pref;
         $key = (\substr($key, 3));
         if (! \array_key_exists($key, $prefix))
-            throw new CapabilityException("No such configuration key `$prefix[$key]`", CapabilityException::CONFIG_ISSUE);
+            throw new CapabilityException("No configuration key `$key` with prefix `$pref`", CapabilityException::CONFIG_ISSUE);
         
         return $prefix[$key];
     }

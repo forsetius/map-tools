@@ -1,8 +1,15 @@
 <?php
+use pl\forseti\reuse\LogicException;
 error_reporting(E_ALL & ~E_STRICT & ~E_DEPRECATED);
 
 spl_autoload_register(function( $class ) {
-        require strtr($class, '_\\', '//') . '.php';
+    $filepath = strtr($class, '_\\', DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR). '.php';
+    if (! file_exists(__DIR__ . '/'. $filepath)) {
+        error_log(\basename($GLOBALS['argv'][0]) . ';'. date('Y-m-d H:i:s') .';1;'. 'LogicException' .';'. "Script error: can't find the `$class` class;lib/autoload.php;8\n", 3, 'error.log');
+        echo "Script error: can't find the `$class` class\n";
+        exit;
+    }
+    require_once $filepath;
 });
 
 set_exception_handler(function(Exception $e) {
