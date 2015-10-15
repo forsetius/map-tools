@@ -1,17 +1,11 @@
 <?php
 $app = array(
-    'Version' => 'pre-alpha',
+    'Version' => '0.7-alpha1',
 );
 
 $capabilities = array(
-    'GfxLibs' => array(
-        'gd',
-        'imagick'
-    ),
-    'ImgFormats' =>array(
-        'jpeg',
-        'png'
-    )
+    'GfxLibs' => ['gd', 'imagick'],
+    'ImgFormats' => ['jpeg', 'png'],
 );
 
 $connections = array();
@@ -25,5 +19,4 @@ $defaults = array(
     'CutToTiles' => false,
     'Verbosity' => 2,
 );
-echo '';
  ?>

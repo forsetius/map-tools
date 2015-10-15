@@ -69,14 +69,17 @@ $srcPath = $cla->s . DIRECTORY_SEPARATOR . 'level' . $level . DIRECTORY_SEPARATO
 $destImg = aImage::make(pow(2,$level)*1024,pow(2,$level)*512);
 
 $tileImg = aImage::make(512, 512);
+if ($cla->v > 1) $pb = new ProgressBar(pow(2,2*$level+1), '    Slicing the map: ');
 for ($x=0;$x<pow(2,$level+1);$x++) {
     for ($y=0;$y<pow(2,$level);$y++) {
         $tileImg->load($srcPath . 'tx_'. $x .'_'. $y .'.png');
         $tileImg->copyTo(0, 0, 512, 512, $destImg->get(), 512*$x, 512*$y);
         $tileImg->destroy();
+        if ($cla->v > 1) $pb->progress();
     }
 }
 $tileImg = null;
+if ($cla->v > 1) echo "\n";
 
 $destImg->write($cla->o);
 $destImg->destroy();
