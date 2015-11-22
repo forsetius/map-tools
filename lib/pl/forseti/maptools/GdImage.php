@@ -5,8 +5,6 @@
 namespace pl\forseti\maptools;
 
 use pl\forseti\reuse\LogicException;
-use pl\forseti\cli\SyntaxException;
-use pl\forseti\reuse\ExternalDataException;
  
 class GdImage extends aImage
 {

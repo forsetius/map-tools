@@ -2,6 +2,8 @@
 namespace pl\forseti\cli;
 
 use pl\forseti\reuse\LogicException;
+use pl\forseti\reuse\iNamed;
+
 /**
  * Command-line argument.
  * Every argument must have a value - either specified by the user
@@ -18,7 +20,7 @@ use pl\forseti\reuse\LogicException;
  * @author forseti
  *
  */
-abstract class aArgument
+abstract class aArgument implements iNamed
 {
     protected $name;
     protected $alias;

@@ -1,5 +1,4 @@
 <?php
-use pl\forseti\reuse\FilesystemException;
 use pl\forseti\cli\SyntaxException;
 use pl\forseti\maptools\CapabilityException;
 $tasks = array(

@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 namespace pl\forseti\maptools;
-require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
+require_once __DIR__.'/lib/autoload.php';
 
 use pl\forseti\cli\ProgressBar;
 use pl\forseti\reuse\Benchmark;
@@ -9,7 +9,7 @@ use pl\forseti\cli\Option;
 use pl\forseti\reuse\FilesystemException as FSe;
 use pl\forseti\reuse\Config;
 
-$cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
+$cfg = new Config(__DIR__.'/lib/config.php');
 $bm = Benchmark::getInstance();
 
 function setupCLA()

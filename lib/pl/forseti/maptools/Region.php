@@ -1,6 +1,10 @@
 <?php
 namespace pl\forseti\maptools;
 
+use pl\forseti\reuse\LogicException;
+throw new LogicException('', LogicException::NOT_IMPLEMENTED);
+// TODO scheduled in v2.0
+
 class Region {
 	const DEFAULT_REGISTRY_FILE = 'registry.csv';
 
@@ -21,9 +25,9 @@ class Region {
 					list($this->name, $this->w, $this->e, $this->n, $this->s) = $data;
 				}
 			}
-			throw new Exception('Region not found in registry');
+			throw new \Exception('Region not found in registry');
 		} else {
-			throw new Exception('Registry not found');
+			throw new \Exception('Registry not found');
 		}
 	}
 

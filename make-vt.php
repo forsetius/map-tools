@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 namespace pl\forseti\maptools;
-require_once realpath(dirname(__FILE__)).'/lib/autoload.php';
+require_once __DIR__.'/lib/autoload.php';
 
 use pl\forseti\cli\Parameter;
 use pl\forseti\cli\ProgressBar;
@@ -9,7 +9,7 @@ use pl\forseti\reuse\FilesystemException as FSe;
 use pl\forseti\reuse\Config;
 use pl\forseti\reuse\Benchmark;
 
-$cfg = new Config(realpath(dirname(__FILE__)).'/lib/config.php');
+$cfg = new Config(__DIR__.'/lib/config.php');
 $bm = Benchmark::getInstance();
 
 function setupCLA()
@@ -23,7 +23,7 @@ EOH
     );
     
     $t = new Parameter('t', $GLOBALS['cfg']->defOutputTxName);
-    $t->setValid(['class'=>'alnum'])->setAlias('output');
+    $t->setValid(['class'=>'alnum'])->setAlias('texture');
     $t->setHelp('texture-name', <<<EOH
                 Name of Virtual Texture within the addon
                 Optional parameter -  if not provided, default '{$GLOBALS['cfg']->defOutputTxName}' is used.
@@ -69,9 +69,15 @@ $ds = DIRECTORY_SEPARATOR;
 $vtPath = $cla->o . "{$ds}textures{$ds}hires{$ds}" . $cla->t;
 if ($cla->v > 1) echo "Creating folders in $cla->t\n";
 
-if (file_exists($vtPath))
-    throw new FSe("Texture folder $vtPath already exists.", FSe::FILE_EXISTS);
-    
+if (file_exists($vtPath)) {
+	if ($cla->test) {
+		$i = 0;
+		while (file_exists($vtPath . $i)) $i++;
+		$vtPath .= $i;
+    } else {
+    	throw new FSe("Texture folder $vtPath already exists.", FSe::FILE_EXISTS);
+    }
+}
 mkdir($vtPath, 0777, true);
 createSSC($cla->o, $cla->t);
 createCTX($vtPath, $cla->t);

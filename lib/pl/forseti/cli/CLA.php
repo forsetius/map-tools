@@ -1,17 +1,20 @@
 <?php
 namespace pl\forseti\cli;
 
-use pl\forseti\reuse\LogicException;
 use pl\forseti\reuse\Help;
+use pl\forseti\reuse\Collection;
+
 /**
  * Command Line Arguments
  */
 class CLA
 {
-    protected $args = array();
+    protected $args;
     
     public function __construct(array $args = array())
     {
+        $this->args = new Collection('pl\forseti\cli\aArgument');
+        
         # verbosity: 0 - quiet, 1 - warnings only, 2 - info (verbose), 3 - debug (detailed time and memory)
         $v = new Option('v', $GLOBALS['cfg']->defVerbosity);
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
@@ -29,8 +32,22 @@ EOH
         
         $help = new Flag('help');
         $help->setHelp('',"Print this help");
+        
+        $test = new Option('test', $GLOBALS['cfg']->defTestMode);
+    	$test->setHelp('', <<<EOH
+Enter developer mode suitable for batch-testing. Options:
+--test
+      see `all`
+--test dry
+      dry test, only print checks to be executed with their expected exit codes
+--test errors
+      do the checks and print exit codes only in case of error
+--test all
+      do the checks and print exit codes (default)
+EOH
+    	);
 
-        $this->addArgs(array_merge([$v, $version, $help], $args));
+        $this->addArgs(array_merge([$v, $version, $help, $test], $args));
     }
 
     public function addArg(aArgument $arg)
@@ -107,6 +124,19 @@ EOH
     	if ($this->help) Help::printTerm($GLOBALS['argv'][0]);
     	if ($this->version) {
     	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . $GLOBALS['cfg']->appVersion . "\n";
+    	    exit(0);
+    	}
+    	if ($this->test !== false) {
+    	    $test = new Test();
+    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/common-test.php');
+    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/image-tools-test.php'); // TODO ten include do ImageCLA - wymyślić sposób dodawania tego d
+    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/'. \pathinfo($_SERVER['PHP_SELF'],PATHINFO_FILENAME) . '-test.php');
+    	    
+    	    if ($this->test == 'dry') {
+    	        $test->dryRun();
+    	    } else {
+    	        $test->run()->output($this->test == 'errors');
+    	    }
     	    exit(0);
     	}
     	return array();

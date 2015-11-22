@@ -28,6 +28,8 @@ $tasks = array(
     ['-s test.png -v=-',SyntaxException::INVALID_VALUE],
     ['-s test.png -v=*',SyntaxException::INVALID_VALUE],
     ['-s test.png --help',0],
+    ['-s test.png -help',255],
+    ['-s test.png --help test',0],
     ['-s test.png -v --help',0],
     ['-s test.png -d -g #g#',0],
     ['-s test1.png -d -g #g#',0],
@@ -43,5 +45,9 @@ $tasks = array(
     ['-s test.png -o #g#_test_#i#.png -c=512 -t512 -r512 -g #g#',0],
     ['-s test.png -o #g#_test_#i#.png -c=-512 -t512 -r512 -g #g#',SyntaxException::INVALID_VALUE],
     ['-s test.png -o #g#_test_#i#.png -c=error -t512 -r512 -g #g#',SyntaxException::INVALID_VALUE],
+    ['-s test.png --version',0],
+    ['-s test.png -version',0],
+    ['-s test.png --version test',255],
+    
 );
 ?>

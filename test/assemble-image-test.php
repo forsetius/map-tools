@@ -1,38 +1,16 @@
 <?php
-$tasks = array(
-['',90],
-    ['-s "test.png" -g #g#',0],
-    ['-s test.png -g #g#',0],
-    ['-s test.jpg -g #g#',0],
-    ['-s test.bmp -g #g#',0],
-    ['-s test.txt -g #g#',71],
-    ['-s test.png -g error',255],
-    ['-s test.png -g',255],
-    ['-s',255],
-    ['-s *',255],
-    ['-s /',255],
-    ['-s test.jpg -o #g#_test_#i#.jpg -g #g#',0],
-    ['-s test.jpg -o #g#_test_#i#.png -g #g#',0],
-    ['-s test.jpg -o #g#_test_#i#.bmp -g #g#',71],
-    ['-s test.jpg -o',255],
-    ['-s test.jpg -o *',255],
-    ['-s test.jpg -o /',255],
-    ['-s test1.png -o #g#_test_#i#.png -g #g#',0],
-    ['-s test2.png -o #g#_test_#i#.png -g #g#',0],
-    ['-s test.png -g #g# -v=0',0],
-    ['-s test.png -g #g# -v',0],
-    ['-s test.png --v=error',255],
-    ['-s test.png -v=5',255],
-    ['-s test.png -v=-5',255],
-    ['-s test.png -v=5-',255],
-    ['-s test.png -v=-',255],
-    ['-s test.png -v=*',255],
-    ['-s test.png --help',0],
-    ['-s test.png --help -v',0],
-    ['-s test.png --help error',255],
-    ['-s test.jpg -a test',0],
-    ['-s test.jpg -a',255],
-    ['-s test.jpg -a *',255],
-    ['-s test.jpg -a /',255],
-);
+use pl\forseti\cli\TestTask;
+
+$s = new TestTask('s');
+$s->setVarsOk(['mars','../test/mars']);
+$s->setVarsNok(['nosuch'=>255, ''=>255, '!nosuch'=>255, '*'=>255, '/'=>255]);
+$s->setCases(['-s @s@ -g @g@'=>0, '-s "@s@"'=>0, '--source @s@'=>0, '-s'=>255, '--s'=>255, '-source #s#'=>255]);
+
+$l = new TestTask('l');
+$l->setVarsOk(['','3','0',3]);
+$l->setVarsNok(['-1'=>255, -1=>255, 7=>255, 'error'=>255, '256'=>255, '2-'=>255, '+'=>255, 'true'=>255]);
+$l->setCases(['-s #s# -l @l@'=>0, '-s #s# --level @l@'=>0, '-s #s# --l #l#'=>255, '-s #s# -level #l#'=>255]);
+
+return [$s, $l];
+
 ?>
