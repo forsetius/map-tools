@@ -31,7 +31,7 @@ class ImageCLA extends CLI\CLA
 	    };
 	    
 	    $o = new CLI\Parameter('o', $GLOBALS['cfg']->defOutputImgName);
-	    $o->setValid(['class'=>'filepath'])->setAlias('output')->setTransform($outputName);
+	    $o->setValid(['class'=>'dirpath'])->setAlias('output')->setTransform($outputName);
 	    $o->setHelp('output-path', 'Path and filename to output image');
 	    
 	    $g = new CLI\Parameter('g', $GLOBALS['cfg']->defGfxLib);

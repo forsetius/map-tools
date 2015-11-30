@@ -93,15 +93,21 @@ EOH
         while ($i <= $max) {
             if ($GLOBALS['argv'][$i][0] == '-') {
                 $argName = \str_replace('-', '', $GLOBALS['argv'][$i]);
+                if (\strlen($argName)==0 ||
+                    ($GLOBALS['argv'][$i][1] != '-' && \strlen($argName)!=1) ||
+                    ($GLOBALS['argv'][$i][1] == '-' && \strlen($argName)==1)
+                   ) throw new SyntaxException("Wrong syntax of `$argName` argument", SyntaxException::BAD_SYNTAX);
                 if (\array_key_exists($argName, $allowedArgs)) {
-                    if (($i == $max) || $GLOBALS['argv'][$i+1]{0} == '-') {
+                    if (($i < $max) && empty($GLOBALS['argv'][$i+1])) {
+                        throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
+                    } elseif (($i == $max) || empty($GLOBALS['argv'][$i+1]) || $GLOBALS['argv'][$i+1]{0} == '-') {
                         $allowedArgs[$argName]->setValue(true);
                         $i++;
                     } else {
                         $allowedArgs[$argName]->setValue($GLOBALS['argv'][$i+1]);
                         $i+=2;
                     }
-                } else throw new SyntaxException("Unexpected option `$argName`", SyntaxException::BAD_SYNTAX);
+                } else throw new SyntaxException("Unexpected argument `$argName`", SyntaxException::UNEXPECTED_ARGUMENT);
             } else throw new SyntaxException("Bad syntax", SyntaxException::BAD_SYNTAX);
         }
         
@@ -129,13 +135,13 @@ EOH
     	if ($this->test !== false) {
     	    $test = new Test();
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/common-test.php');
-    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/image-tools-test.php'); // TODO ten include do ImageCLA - wymyślić sposób dodawania tego d
-    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/'. \pathinfo($_SERVER['PHP_SELF'],PATHINFO_FILENAME) . '-test.php');
+    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/image-tools-test.php');
+//    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/'. \pathinfo($_SERVER['PHP_SELF'],PATHINFO_FILENAME) . '-test.php');
     	    
-    	    if ($this->test == 'dry') {
+    	    if ($this->test === 'dry') {
     	        $test->dryRun();
     	    } else {
-    	        $test->run()->output($this->test == 'errors');
+    	        $test->run()->output($this->test === 'errors');
     	    }
     	    exit(0);
     	}

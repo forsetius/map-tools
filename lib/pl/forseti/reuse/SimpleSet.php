@@ -125,6 +125,6 @@ class SimpleSet implements \Countable, \Iterator
     protected function checkValid($val)
     {
         if (! (\is_int($val) || \is_string($val) || \is_bool($val)) )
-            throw new \LogicException('SimpleSet cannot accept a value of '. \gettype($val));
+            throw new \LogicException('SimpleSet cannot accept a value of '. \gettype($val),LogicException::INVALID_TYPE);
     }
 }

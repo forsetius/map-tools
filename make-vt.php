@@ -44,9 +44,9 @@ $h = $srcImg->getHeight();
 if ($cla->v > 1) echo "Loaded $w x $h image\n";
 
 if ($w != 2 * $h)
-    throw new CapabilityException("Error! Map's width must be 2 * height.", CapabilityException::PARAM_OUT_OF_RANGE);
+    throw new CapabilityException("Error! Map's width must be 2 * height.", CapabilityException::FAILED_REQUIREMENT);
 if ($h < 1024)
-    throw new CapabilityException("Error! Map's resolution is too low. Should be 2048*1024 or greater", CapabilityException::PARAM_OUT_OF_RANGE);
+    throw new CapabilityException("Error! Map's resolution is too low. Should be 2048*1024 or greater", CapabilityException::FAILED_REQUIREMENT);
 
 // ustal docelowe wymiary i poziom mapy
 $dim = 1024; $level = 0;

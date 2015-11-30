@@ -8,7 +8,6 @@ use pl\forseti\reuse\Benchmark;
 use pl\forseti\cli\Parameter;
 use pl\forseti\reuse\Config;
 use pl\forseti\cli\Requisite;
-use pl\forseti\reuse\ExternalDataException;
 
 $cfg = new Config(__DIR__.'/lib/config.php');
 $bm = Benchmark::getInstance();
@@ -27,7 +26,7 @@ EOH
         return \str_replace('?', pow(2, $GLOBALS['level']), $val);
     };
     $o = new Parameter('o',$GLOBALS['cfg']->defOutputMapName);
-    $o->setValid(['class'=>'filepath'])->setAlias('output')->setTransform($lambda);
+    $o->setValid(['class'=>'dirpath'])->setAlias('output')->setTransform($lambda);
     $o->setHelp('output-image', <<<EOH
                 A path and filename for output image
                 Optional parameter - if not provided,
@@ -57,7 +56,7 @@ $level = -1;
 while (\file_exists($cla->s . DIRECTORY_SEPARATOR . 'level'. ($level+1))) {
     $level++;
 }
-if ($level < 0) throw new ExternalDataException("Directory: $cla->s doesn't contain any virtual texture levels.", 100);
+if ($level < 0) throw new CapabilityException("Directory `$cla->s` doesn't contain any virtual texture levels.", CapabilityException::BAD_DATA);
 if ($level > $cla->l) {
     $level = $cla->l;
 } else {

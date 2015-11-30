@@ -22,9 +22,9 @@ class TestTask implements iNamed
     
     public function setVarsOk(array $varsOk)
     {
-        foreach ($varsOk as $arg)
-            $this->vars[$arg] = 0;
-        
+        foreach ($varsOk as $arg) {
+            $this->vars[] = [$arg,0];
+        }
         $this->default =& $varsOk[0];
         return $this;
     }

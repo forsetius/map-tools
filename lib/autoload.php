@@ -1,6 +1,11 @@
 <?php
 use pl\forseti\reuse\LogicException;
-error_reporting(E_ALL & ~E_STRICT & ~E_DEPRECATED);
+
+preg_match('/^(?:(\d+\.[.\d]*\d+))/', PHP_VERSION, $phpVer);
+if (empty($phpVer) || (version_compare($phpVer[0], '5.6.0') < 0))
+    exit("This script requires PHP 5.6.0 or later. Version ". PHP_VERSION ." found.\n");
+
+    error_reporting(E_ALL & ~E_STRICT & ~E_DEPRECATED);
 
 spl_autoload_register(function( $class ) {
     $filepath = strtr($class, '_\\', DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR). '.php';

@@ -12,11 +12,12 @@ use pl\forseti\reuse\aException;
  */
 class CapabilityException extends aException
 {
-    const UNSUPPORTED_LIBRARY = 70;
-    const UNSUPPORTED_FORMAT = 71;
-    const REGISTRY_ISSUE = 72;
-    const CONFIG_ISSUE = 73;
-
+    const CONFIG_ISSUE = 70;
+    const UNSUPPORTED_LIBRARY = 71;
+    const UNSUPPORTED_FORMAT = 72;
+    const BAD_DATA = 73;
+    const FAILED_REQUIREMENT = 74;
+    
     public function __construct ($message = "", $code, \Exception $previous = NULL)
     {
         $script = \basename($GLOBALS['argv'][0]);

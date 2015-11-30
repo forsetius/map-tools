@@ -3,6 +3,7 @@ namespace pl\forseti\cli;
 
 use pl\forseti\reuse\LogicException;
 use pl\forseti\reuse\iNamed;
+use pl\forseti\reuse\FilesystemException;
 
 /**
  * Command-line argument.
@@ -30,7 +31,8 @@ abstract class aArgument implements iNamed
     protected $help;
     
     static protected $classes = array(
-        'filepath' => '~^([a-zA-Z]:)?[\w \-\.()\\/?]+$~',
+        'filepath' => '~^([a-zA-Z]:)?[\w \-\.()\\/]*[\w\-\.()]$~',
+        'dirpath' => '~^([a-zA-Z]:)?[\w \-\.()\\/]*[\w\-\.()]$~',
         'uint'     => '/^[\d?]+$/',
         'alnum'    => '/[[:alnum:]_?]+/'
     );
@@ -122,6 +124,9 @@ abstract class aArgument implements iNamed
     }
     
     protected function validate($val) {
+        if (\is_bool($val)) {
+            throw new SyntaxException("Argument `{$this->name}` should have a value", SyntaxException::REQUIRED_VALUE);
+        }
         if (!empty($this->valid)) {
             if (\array_key_exists('class', $this->valid)) {
                 if (\array_key_exists($this->valid['class'], static::$classes)) {
@@ -137,15 +142,28 @@ abstract class aArgument implements iNamed
             }
             if (\array_key_exists('min', $this->valid)) {
                 if ($val < $this->valid['min'])
-                    throw new SyntaxException("Value of parameter `{$this->name} is too low. Minimal value is: ". $this->valid['min'], SyntaxException::VALUE_OUT_OF_BOUNDS);
+                    throw new SyntaxException("Value of parameter `{$this->name} is too low. Minimal value is: ". $this->valid['min'], SyntaxException::INVALID_VALUE);
             }
             if (\array_key_exists('max', $this->valid)) {
                 if ($val > $this->valid['max'])
-                    throw new SyntaxException("Value of parameter `{$this->name} is too high. Maximal value is: ". $this->valid['max'], SyntaxException::VALUE_OUT_OF_BOUNDS);
+                    throw new SyntaxException("Value of parameter `{$this->name} is too high. Maximal value is: ". $this->valid['max'], SyntaxException::INVALID_VALUE);
             }
             if (\array_key_exists('set', $this->valid)) {
                 if (! \in_array($this->value, $this->valid['set']))
-                    throw new SyntaxException("Value of parameter `{$this->name} must be one of: ". \implode(', ', $this->valid['set']), SyntaxException::VALUE_OUT_OF_BOUNDS);
+                    throw new SyntaxException("Value of parameter `{$this->name} must be one of: ". \implode(', ', $this->valid['set']), SyntaxException::INVALID_VALUE);
+            }
+            
+            if (\array_key_exists('class', $this->valid)) {
+                switch ($this->valid['class']) {
+                    case 'filepath' :
+                        if (! \file_exists($val))
+                            throw new FilesystemException("File `$val` not found", FilesystemException::FILE_NOT_FOUND);
+                        break;
+                    case 'dirpath' :
+                        if (! \file_exists(\pathinfo($val,PATHINFO_DIRNAME)))
+                            throw new FilesystemException('Directory `'.\pathinfo($val,PATHINFO_DIRNAME).'` not found', FilesystemException::FOLDER_NOT_FOUND);
+                    default: ;
+                }
             }
         }
         

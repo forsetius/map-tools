@@ -18,6 +18,6 @@ $defaults = array(
     'TileSize' =>   1024,
     'CutToTiles' => false,
     'Verbosity' => 2,
-    'TestMode' => true,
+    'TestMode' => 'all',
 );
  ?>
