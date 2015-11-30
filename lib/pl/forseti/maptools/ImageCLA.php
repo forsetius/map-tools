@@ -45,7 +45,7 @@ Supported libraries are:
 EOH
 	    );
 	    
-        parent::__construct(array_merge([$s, $o, $g], $options));
+        parent::__construct(array_merge([$s, $g, $o], $options));
 	}
 	
 	public function postproc() {

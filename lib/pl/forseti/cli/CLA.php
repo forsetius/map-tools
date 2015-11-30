@@ -3,6 +3,7 @@ namespace pl\forseti\cli;
 
 use pl\forseti\reuse\Help;
 use pl\forseti\reuse\Collection;
+use pl\forseti\reuse\LogicException;
 
 /**
  * Command Line Arguments
@@ -91,27 +92,40 @@ EOH
         $i = 1;
         $max = count($GLOBALS['argv'])-1;
         while ($i <= $max) {
-            if ($GLOBALS['argv'][$i][0] == '-') {
-                $argName = \str_replace('-', '', $GLOBALS['argv'][$i]);
-                if (\strlen($argName)==0 ||
-                    ($GLOBALS['argv'][$i][1] != '-' && \strlen($argName)!=1) ||
-                    ($GLOBALS['argv'][$i][1] == '-' && \strlen($argName)==1)
-                   ) throw new SyntaxException("Wrong syntax of `$argName` argument", SyntaxException::BAD_SYNTAX);
+            // Disallow arguments like '---any', '--s' and '-long'
+            $argName = $this->getArgumentName($GLOBALS['argv'][$i]);
+            if ($argName !== false) {
+                
+                // Allow only previously defined arguments
                 if (\array_key_exists($argName, $allowedArgs)) {
+                    // Disallow arguments with empty values like '-s ""'
                     if (($i < $max) && empty($GLOBALS['argv'][$i+1])) {
                         throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
-                    } elseif (($i == $max) || empty($GLOBALS['argv'][$i+1]) || $GLOBALS['argv'][$i+1]{0} == '-') {
+                    }
+                    // if argument without value then set it to true. Classes derived from aArgument will decide if it's correct later
+                    elseif ($i == $max || ($this->getArgumentName($GLOBALS['argv'][$i+1]) !== false)) {
                         $allowedArgs[$argName]->setValue(true);
                         $i++;
-                    } else {
+                    }
+                    // if argument with value then assign it the value
+                    else {
                         $allowedArgs[$argName]->setValue($GLOBALS['argv'][$i+1]);
                         $i+=2;
                     }
                 } else throw new SyntaxException("Unexpected argument `$argName`", SyntaxException::UNEXPECTED_ARGUMENT);
-            } else throw new SyntaxException("Bad syntax", SyntaxException::BAD_SYNTAX);
+            } else throw new SyntaxException("Wrong syntax of `{$GLOBALS['argv'][$i][0]}` argument", SyntaxException::BAD_SYNTAX);
         }
         
         return $this;
+    }
+    
+    protected function getArgumentName($str)
+    {
+        $name = \preg_replace('/(?:^-([\w\d])$)|(?:^--([\w\d][\w\d_?!.:-]+)$)/', '$1$2', $str,1);
+        if (\is_null($name)) {
+            throw new LogicException("Error in regexp with `$str` string");
+        }
+        return ($str == $name) ? false : $name;
     }
 
     public function __get($name)

@@ -17,7 +17,7 @@ $o->setCases([['-s #s# -o @o@ -g @g@',0], ['-s #s# -o "@o@"',0], ['-s #s# --outp
     
 $g = new TestTask('g');
 $g->setVarsOk(['gd', 'imagick']);
-$g->setVarsNok([['imagemagick',CapabilityException::UNSUPPORTED_LIBRARY], ['',SyntaxException::REQUIRED_VALUE], ['-',SyntaxException::BAD_SYNTAX], ['*',SyntaxException::BAD_SYNTAX]]);
+$g->setVarsNok([['imagemagick',CapabilityException::UNSUPPORTED_LIBRARY], ['',SyntaxException::REQUIRED_VALUE], ['-',CapabilityException::UNSUPPORTED_LIBRARY], ['*',SyntaxException::BAD_SYNTAX]]);
 $g->setCases([['-s #s# -g @g@',0], ['-s #s# --gfx @g@',0], ['-s #s# -g',SyntaxException::REQUIRED_VALUE], ['-s #s# --g #g#',SyntaxException::BAD_SYNTAX], ['-s #s# -gfx #g#',SyntaxException::BAD_SYNTAX]]);
 
 return [$s, $o, $g];
