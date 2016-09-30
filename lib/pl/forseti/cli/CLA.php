@@ -16,7 +16,6 @@ class CLA
     {
         $this->args = new Collection('pl\forseti\cli\aArgument');
         
-        # verbosity: 0 - quiet, 1 - warnings only, 2 - info (verbose), 3 - debug (detailed time and memory)
         $v = new Option('v', $GLOBALS['cfg']->defVerbosity);
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
         $v->setHelp('level',<<<EOH
@@ -99,7 +98,7 @@ EOH
                 // Allow only previously defined arguments
                 if (\array_key_exists($argName, $allowedArgs)) {
                     // Disallow arguments with empty values like '-s ""'
-                    if (($i < $max) && empty($GLOBALS['argv'][$i+1])) {
+                    if (($i < $max) && $GLOBALS['argv'][$i+1]=='') {
                         throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
                     }
                     // if argument without value then set it to true. Classes derived from aArgument will decide if it's correct later
@@ -150,7 +149,7 @@ EOH
     	    $test = new Test();
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/common-test.php');
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/image-tools-test.php');
-//    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/'. \pathinfo($_SERVER['PHP_SELF'],PATHINFO_FILENAME) . '-test.php');
+    	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/'. \pathinfo($_SERVER['PHP_SELF'],PATHINFO_FILENAME) . '-test.php');
     	    
     	    if ($this->test === 'dry') {
     	        $test->dryRun();

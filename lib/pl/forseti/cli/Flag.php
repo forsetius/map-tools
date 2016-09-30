@@ -7,6 +7,7 @@ namespace pl\forseti\cli;
  * @author forseti
  *
  */
+
 class Flag extends aArgument
 {
     public function __construct($name, $default = false)

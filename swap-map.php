@@ -25,9 +25,10 @@ function setupCLA()
                 can be specified if different tile dimensions are required.
 EOH
     );
+    return [$c];
 }
 
-$cla = (new ImageCLA())->parse();
+$cla = (new ImageCLA(setupCLA()))->parse();
 extract($cla->postproc());
 
 $bm->setEcho($cla->v == 3);

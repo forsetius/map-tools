@@ -8,7 +8,7 @@ use pl\forseti\reuse\aException;
  * Used to cover the cases strictly connected to syntactic correctness of
  * script parameters and presence of required parameters and values.
  * @author forseti
- *
+ * 
  */
 class SyntaxException extends aException
 {

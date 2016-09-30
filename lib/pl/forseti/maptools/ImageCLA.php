@@ -7,6 +7,9 @@ use \pl\forseti\cli as CLI;
 
 class ImageCLA extends CLI\CLA
 {
+	/**
+	 * @return void constructor
+	*/
 	public function __construct(array $options = array())
 	{
 	    $s = new CLI\Requisite('s');

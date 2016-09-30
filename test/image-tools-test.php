@@ -11,9 +11,9 @@ $s->setCases([['-s @s@ -g @g@',0], ['--source @s@',0], ['-s',SyntaxException::RE
 
 $o = new TestTask('o');
 $o->setVarsOk(['mars.png','mars.jpg','../assemble-image/mars.png']);
-$o->setVarsNok([['noext',FilesystemException::FILE_NOT_FOUND], ['',FilesystemException::FILE_NOT_FOUND], ['test.bmp',CapabilityException::UNSUPPORTED_FORMAT], ['test.txt',CapabilityException::UNSUPPORTED_FORMAT], ['!badname.png',FilesystemException::FILE_NOT_FOUND], ['*',SyntaxException::BAD_SYNTAX], ['/',SyntaxException::INVALID_VALUE]]);
-$o->setCases([['-s #s# -o @o@ -g @g@',0], ['-s #s# -o "@o@"',0], ['-s #s# --output @o@',0],
-    ['-s #s# -o',SyntaxException::REQUIRED_VALUE], ['-s #s# --o #o#',SyntaxException::BAD_SYNTAX], ['-s #s# -output #o#',SyntaxException::BAD_SYNTAX]]);
+$o->setVarsNok([['noext',CapabilityException::UNSUPPORTED_FORMAT], ['',CapabilityException::UNSUPPORTED_FORMAT], ['test.bmp',CapabilityException::UNSUPPORTED_FORMAT], ['test.txt',CapabilityException::UNSUPPORTED_FORMAT], ['!badname.png',SyntaxException::INVALID_VALUE], ['*',SyntaxException::BAD_SYNTAX], ['/',SyntaxException::INVALID_VALUE]]);
+$o->setCases([['-s #s# -o @o@ -g @g@',0], ['-s #s# -o @o@',0], ['-s #s# --output @o@',0],
+    ['-s #s# -o',CapabilityException::UNSUPPORTED_FORMAT], ['-s #s# --o #o#',SyntaxException::BAD_SYNTAX], ['-s #s# -output #o#',SyntaxException::BAD_SYNTAX]]);
     
 $g = new TestTask('g');
 $g->setVarsOk(['gd', 'imagick']);

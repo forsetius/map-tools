@@ -1,8 +1,8 @@
 Assemblies one level of virtual texture into one big image.
 
 <h1>SYNTAX</h1>
-        <b>assembly-map.php</b> -s <u>&lt;source-map-folder&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;level&gt;</u>] [-v]
-        <b>assembly-map.php</b> --help
+        <b>assemble-map.php</b> -s <u>&lt;source-map-folder&gt;</u> [-o <u>&lt;output-filename&gt;</u>] [-l <u>&lt;level&gt;</u>] [-v]
+        <b>assemble-map.php</b> --help
 
 <h1>SWITCHES</h1>:
         <b>-s</b> <u>&lt;source-map-filename&gt;</u>
@@ -24,7 +24,10 @@ Assemblies one level of virtual texture into one big image.
                 Switch. If used, the script will report its progress.  
 
         <b>--help</b>
-                Switch. Show this help information and quit.         
+                Switch. Show this help information and quit.      
+                
+        <b>--version</b>
+                Switch. Show script's version and quit.   
                 
 <h1>ARGUMENT TYPES</h1>:      
         <b>Parameter</b>
