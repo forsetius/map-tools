@@ -2,7 +2,7 @@
 /**
  * @package forseti.pl\maptools
  */
-namespace pl\forseti\maptools;
+namespace pl\forseti\maptools\Image;
 
 use pl\forseti\reuse\LogicException;
 class ImagickImage extends aImage
@@ -22,35 +22,35 @@ class ImagickImage extends aImage
         }
         return $imType;
     }
-    
+
     public function create($w, $h)
     {
         $img = new \Imagick();
         $img->newImage($w, $h, 'none');
         $this->set($img);
     }
- 
+
     public function load($filename)
     {
         parent::load($filename);
         self::imageTypeFunction(\strtolower(\pathinfo($filename, PATHINFO_EXTENSION)));
         $this->set(new \Imagick(realpath($filename)));
     }
-    
+
     public function get()
     {
         return $this->image;
     }
-    
+
     public function set($res)
     {
         if (! ($res instanceof \Imagick))
             throw new LogicException('Passed parameter is '. \gettype($res) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
-        
+
         $this->destroy();
         $this->image = $res;
     }
-    
+
     public function getWidth()
     {
         return $this->image->getimagewidth();
@@ -60,11 +60,11 @@ class ImagickImage extends aImage
     {
         return $this->image->getimageheight();
     }
-    
+
     public function sampleColor($x, $y) {
         return $this->image->getImagePixelColor($x, $y)->getColor(true);
     }
-    
+
     //TODO test, czy dobrze działa
     public function getColorRGBA($x, $y)
     {
@@ -72,20 +72,20 @@ class ImagickImage extends aImage
                 $value = \round($value * 256);
             });
     }
-    
+
     public function getColorIndex($x, $y)
     {
         $color = $this->sampleColor($x, $y);
         return $color['a']*256*256*256 + $color['r']*256*256 + $color['g']*256 + $color['b'];
     }
-    
+
     public function crop($l, $t, $r, $b)
     {
         $w = $this->getWidth()-$l-$r;
         $h = $this->getHeight()-$t-$b;
         $this->image->cropimage($w, $h, $l, $t);
     }
-    
+
     public function scale($w, $h)
     {
         if ($w > $this->getWidth()) {
@@ -98,7 +98,7 @@ class ImagickImage extends aImage
 
         $this->image->resizeimage($w, $h, $interpolation, $blur);
     }
-    
+
     public function copyTo($x, $y, $w, $h, $destImg, $dx = 0, $dy = 0)
     {
         $tempImg = $this->image->getimageregion($w, $h, $x, $y);
@@ -106,7 +106,7 @@ class ImagickImage extends aImage
         $destImg->setImagePage(0, 0, 0, 0);
         $tempImg->destroy();
     }
-    
+
     public function copy($x, $y, $w, $h)
     {
         return $this->image->getimageregion($w, $h, $x, $y);
@@ -134,7 +134,7 @@ class ImagickImage extends aImage
         $res->image->writeimage($format .':'. $path);
         echo "test5\n";
     }
-    
+
     public function write($path, $isQuick = false, $isAlpha = false)
     {
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
@@ -151,13 +151,13 @@ class ImagickImage extends aImage
         $this->image->setImageCompressionQuality($compression);
         $this->image->writeimage($format .':'. $path);
     }
-    
+
     public function destroy()
     {
         if ($this->image instanceof \Imagick)
             $this->image->clear();
     }
-    
+
     private function flatten()
     {
         /**

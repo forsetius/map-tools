@@ -2,7 +2,7 @@
 /**
  * @package forseti.pl\maptools
  */
-namespace pl\forseti\maptools;
+namespace pl\forseti\maptools\Image;
 
 use pl\forseti\reuse\LogicException;
 use pl\forseti\reuse\FilesystemException;
@@ -10,7 +10,7 @@ use pl\forseti\reuse\FilesystemException;
 abstract class aImage
 {
     protected static $library = 'Gd';
-    
+
     /**
      * Set the graphics library to use
      *
@@ -24,10 +24,10 @@ abstract class aImage
         if (! \in_array($library, array('gd', 'imagick', 'gmagick')) ||
             extension_loaded($library) !== true )
             throw new CapabilityException("Unsupported image library: $library", CapabilityException::UNSUPPORTED_LIBRARY);
-        
+
         static::$library = 'pl\forseti\maptools\\' . \ucfirst($library) . 'Image';
     }
-    
+
     /**
      * Factory method. Makes an instance of Image subclass.
      * Concrete type is chosen based on value of self::$library. Use aImage::setLibrary(string) to set it. 'Gd' is assumed.
@@ -37,7 +37,7 @@ abstract class aImage
      */
     public final static function make(...$args) {
         $obj = new self::$library;
-        
+
         switch (count($args)) {
             case 0: break;                          // tylko stwórz obiekt
             case 1: $obj->load($args[0]); break;
@@ -46,14 +46,14 @@ abstract class aImage
         }
         return $obj;
     }
-    
-    
+
+
     /**
      * Image resource created by image library
      * @var resource
      */
     protected $image = null;
-    
+
     /**
      * Create new image resource of dimensions $w x $h
      * @param integer $w Width
@@ -61,7 +61,7 @@ abstract class aImage
      * @return void
      */
     abstract public function create($w, $h);
-    
+
     /**
      * Load an image into object.
      * Takes image's filename and creates image resource stored in the object. If you overload this method use parent::Load($filename) at the beginning of your method.
@@ -73,23 +73,23 @@ abstract class aImage
         if(! file_exists($filename))
             throw new FilesystemException("File `$filename` doesn't exist", FilesystemException::FILE_NOT_FOUND);
     }
-    
+
     abstract public function get();
-    
+
     abstract public function set($res);
-    
+
     /**
      * Get the image's width
      * @return integer Width
      */
     abstract public function getWidth();
-    
+
     /**
      * Get the image's height
      * @return integer height
      */
     abstract public function getHeight();
-    
+
     /**
      * Get the color of pixel at (x,y) coordinates
      * @param integer $x
@@ -97,7 +97,7 @@ abstract class aImage
      * @return int
      */
     abstract public function getColorIndex($x, $y);
-    
+
     /**
      * Crop the image by specified number of pixels.
      * Cropped image replaces original one.
@@ -108,7 +108,7 @@ abstract class aImage
      * @return void
      */
     abstract public function crop($l, $t, $r, $b);
-    
+
     /**
      * Scale the image to dimentions given in arguments.
      * Scaled image replaces original one.
@@ -117,7 +117,7 @@ abstract class aImage
      * @return void
      */
     abstract public function scale($w, $h);
-    
+
     /**
      * Copy a rectangular fragment of image onto another image.
      * @param integer $x X-coordinate of source point
@@ -130,9 +130,9 @@ abstract class aImage
      * @return aImage Destination image object
      */
     abstract public function copyTo($x, $y, $w, $h, $destImg, $dx = 0, $dy = 0);
-    
+
     abstract public function copy($x, $y, $w, $h);
-    
+
     public static function dump($res, $path, $isQuick = false, $isAlpha = false)
     {
         $format = self::imageTypeFunction(\strtolower(\pathinfo($path, PATHINFO_EXTENSION)));
@@ -140,7 +140,7 @@ abstract class aImage
         $class = self::$library;
         $class::dump($res, $path, $format, $isQuick, $isAlpha);
     }
-    
+
     /**
      * Write image resource to specified file.
      * If you overload this method use parent::Load($filename) at the beginning of your method.
@@ -151,13 +151,13 @@ abstract class aImage
      * @throws \Exception if $isQuick = true or $isAlpha=true but $path extension isn't 'png'
      */
     abstract public function write($path, $isQuick = false, $isAlpha = false);
-    
+
     /**
      * Destroy the image resource and null it to free the memory
      * @return void
      */
     abstract public function destroy();
-    
+
     public function __destruct() {
         $this->destroy();
     }

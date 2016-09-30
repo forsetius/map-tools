@@ -2,10 +2,10 @@
 /**
  * @package forseti.pl\maptools
  */
-namespace pl\forseti\maptools;
+namespace pl\forseti\maptools\Image;
 
 use pl\forseti\reuse\LogicException;
- 
+
 class GdImage extends aImage
 {
     public static function imageTypeFunction($extension) {
@@ -24,7 +24,7 @@ class GdImage extends aImage
         }
         return $imType;
     }
-    
+
     /**
      * Get the image resource
      * @return resource
@@ -33,10 +33,10 @@ class GdImage extends aImage
     public function get() {
         if (\is_null($this->image))
             throw new LogicException('No resource stored.', LogicException::INVALID_RESOURCE);
-    
+
         return $this->image;
     }
-    
+
     /**
      * Store the image resource in the object
      * @param resource $imgRes
@@ -46,24 +46,24 @@ class GdImage extends aImage
     public function set($imgRes) {
         if (! \is_resource($imgRes))
             throw new LogicException('Passed parameter is '. \gettype($imgRes) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
-    
+
         $this->destroy();
         $this->image = $imgRes;
     }
-    
+
     public function create($w, $h)
     {
         //TODO greyscale
         $this->set(imagecreatetruecolor($w, $h));
     }
-    
+
     public function load($filename)
     {
         parent::load($filename);
         @$imgType = exif_imagetype($filename);
         if ($imgType === false)
             throw new CapabilityException("Unsupported file type. Supported types: Jpeg and PNG.", CapabilityException::UNSUPPORTED_FORMAT);
-        
+
         $callFunc = 'imagecreatefrom' . self::imageTypeFunction($imgType);
 
         $this->set($callFunc('./'.$filename));
@@ -78,11 +78,11 @@ class GdImage extends aImage
     {
         return imagesy($this->image);
     }
-    
+
     public function sampleColor($x, $y) {
         return $this->getColorIndex($x, $y);
     }
-    
+
     public function getColorRGBA($x, $y)
     {
         $color = $this->getColorIndex($x, $y);
@@ -92,12 +92,12 @@ class GdImage extends aImage
                      'a'=>($color & 0x7F000000) >> 24
                     );
     }
-    
+
     public function getColorIndex($x, $y)
     {
         return imagecolorat($this->image, $x, $y);
     }
-    
+
     public function crop($l, $t, $r, $b)
     {
         $w = $this->getWidth()-$l-$r;
@@ -106,7 +106,7 @@ class GdImage extends aImage
         $this->destroy();
         $this->set($tempImg);
     }
-    
+
     public function scale($w, $h)
     {
         // TODO: non-default interpolation options cause segfault $interpolation =  ($w > $this->getWidth()) ? IMG_BICUBIC_FIXED : IMG_SINC; // IMG_GENERALIZED_CUBIC, IMG_QUADRATIC
@@ -124,10 +124,10 @@ class GdImage extends aImage
         $this->copyTo($x, $y, $w, $h, $destImg);
         return $destImg;
     }
-    
+
 	public function convertToPalette()
 	{
-		
+
 	}
 
 	public static function dump($res, $path, $isQuick = false, $isAlpha = false)
@@ -144,7 +144,7 @@ class GdImage extends aImage
 	    $saveFunc = 'image' . $format;
 	    $saveFunc($res, $path, $quality);
 	}
-	
+
     public function write($path, $isQuick = false, $isAlpha = false)
     {
         GdImage::dump($this->image, $path, $isQuick, $isAlpha);
@@ -154,10 +154,10 @@ class GdImage extends aImage
     {
     	if (\is_resource($this->image))
     	    \imagedestroy($this->image);
-    	
+
     	$this->image = null;
     }
-    
+
 }
 
  ?>
