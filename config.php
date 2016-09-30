@@ -1,6 +1,6 @@
 <?php
 $app = array(
-    'Version' => '0.7-alpha1',
+    'Version' => '2.0-alpha1',
 );
 
 $capabilities = array(

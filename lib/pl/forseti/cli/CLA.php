@@ -11,11 +11,11 @@ use pl\forseti\reuse\LogicException;
 class CLA
 {
     protected $args;
-    
+
     public function __construct(array $args = array())
     {
         $this->args = new Collection('pl\forseti\cli\aArgument');
-        
+
         $v = new Option('v', $GLOBALS['cfg']->defVerbosity);
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
         $v->setHelp('level',<<<EOH
@@ -26,13 +26,13 @@ Verbosity level:
  3. Benchmark: also timings and memory readings will be available
 EOH
         );
-        
+
         $version = new Flag('version');
         $version->setHelp('',"Print this script suite's version");
-        
+
         $help = new Flag('help');
         $help->setHelp('',"Print this help");
-        
+
         $test = new Option('test', $GLOBALS['cfg']->defTestMode);
     	$test->setHelp('', <<<EOH
 Enter developer mode suitable for batch-testing. Options:
@@ -66,7 +66,7 @@ EOH
 
         return $this;
     }
-    
+
     /**
      * Parse the command line arguments supplied to the CLI script.
      * Note: switch-type arguments that do no accept values (are either set or not set, like -v or --verbose)
@@ -82,19 +82,19 @@ EOH
         $allowedArgs = array();
         foreach ($this->args as $argName=>&$arg) {
             $allowedArgs[$argName] = $arg;
-            
+
             foreach ((array) $arg->getAlias() as $alias) {
                 $allowedArgs[$alias] = $arg;
             }
         }
-        
+
         $i = 1;
         $max = count($GLOBALS['argv'])-1;
         while ($i <= $max) {
             // Disallow arguments like '---any', '--s' and '-long'
             $argName = $this->getArgumentName($GLOBALS['argv'][$i]);
             if ($argName !== false) {
-                
+
                 // Allow only previously defined arguments
                 if (\array_key_exists($argName, $allowedArgs)) {
                     // Disallow arguments with empty values like '-s ""'
@@ -114,10 +114,10 @@ EOH
                 } else throw new SyntaxException("Unexpected argument `$argName`", SyntaxException::UNEXPECTED_ARGUMENT);
             } else throw new SyntaxException("Wrong syntax of `{$GLOBALS['argv'][$i][0]}` argument", SyntaxException::BAD_SYNTAX);
         }
-        
+
         return $this;
     }
-    
+
     protected function getArgumentName($str)
     {
         $name = \preg_replace('/(?:^-([\w\d])$)|(?:^--([\w\d][\w\d_?!.:-]+)$)/', '$1$2', $str,1);
@@ -131,13 +131,13 @@ EOH
     {
     	return $this->args[$name]->getValue();
     }
-    
+
     public function __set($name, $val)
     {
         $this->args[$name]->setValue($val);
         return $this;
     }
-    
+
     public function postproc()
     {
     	if ($this->help) Help::printTerm($GLOBALS['argv'][0]);
@@ -150,7 +150,7 @@ EOH
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/common-test.php');
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/image-tools-test.php');
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/'. \pathinfo($_SERVER['PHP_SELF'],PATHINFO_FILENAME) . '-test.php');
-    	    
+
     	    if ($this->test === 'dry') {
     	        $test->dryRun();
     	    } else {
@@ -160,11 +160,7 @@ EOH
     	}
     	return array();
     }
-    
-    /*
-     * TODO reporting capability
-     */
-    
+
 }
 
  ?>
