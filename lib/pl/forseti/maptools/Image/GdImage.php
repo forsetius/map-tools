@@ -1,12 +1,9 @@
 <?php
-/**
- * @package forseti.pl\maptools
- */
 namespace pl\forseti\maptools\Image;
-
 use pl\forseti\reuse\LogicException;
+use pl\forseti\maptools\CapabilityException;
 
-class GdImage extends aImage
+class GdImage extends AbstractImage
 {
     public static function imageTypeFunction($extension) {
         switch ($extension) {
@@ -45,7 +42,7 @@ class GdImage extends aImage
      */
     public function set($imgRes) {
         if (! \is_resource($imgRes))
-            throw new LogicException('Passed parameter is '. \gettype($imgRes) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
+            throw new LogicException('Passed parameter is '. \gettype($imgRes) .'  - should be '. AbstractImage::$library .' resource.', LogicException::INVALID_RESOURCE);
 
         $this->destroy();
         $this->image = $imgRes;

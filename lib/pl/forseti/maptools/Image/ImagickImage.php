@@ -1,13 +1,10 @@
 <?php
-/**
- * @package forseti.pl\maptools
- */
 namespace pl\forseti\maptools\Image;
-
 use pl\forseti\reuse\LogicException;
-class ImagickImage extends aImage
-{
+use pl\forseti\maptools\CapabilityException;
 
+class ImagickImage extends AbstractImage
+{
     public static function imageTypeFunction($extension) {
         switch ($extension) {
             case 'jpeg' :
@@ -45,7 +42,7 @@ class ImagickImage extends aImage
     public function set($res)
     {
         if (! ($res instanceof \Imagick))
-            throw new LogicException('Passed parameter is '. \gettype($res) .'  - should be '. aImage::$library .' resource.', LogicException::INVALID_RESOURCE);
+            throw new LogicException('Passed parameter is '. \gettype($res) .'  - should be '. AbstractImage::$library .' resource.', LogicException::INVALID_RESOURCE);
 
         $this->destroy();
         $this->image = $res;

@@ -38,7 +38,7 @@ $cla = (new ImageCLA(setupCLA()))->parse();
 extract($cla->postproc());
 
 if ($cla->v > 1) echo "Loading image\n";
-$srcImg = aImage::make($cla->s);
+$srcImg = AbstractImage::make($cla->s);
 $w = $srcImg->getWidth();
 $h = $srcImg->getHeight();
 if ($cla->v > 1) echo "Loaded $w x $h image\n";
@@ -83,7 +83,7 @@ createSSC($cla->o, $cla->t);
 createCTX($vtPath, $cla->t);
 
 // dla każdego poziomu mapy od bieżącego do 1 stwórz kafelki
-$tileImg = aImage::make();
+$tileImg = AbstractImage::make();
 while ($level > -1) {
     if ($cla->v > 1) echo "Level $level\n";
     mkdir($vtPath . '/level' . $level);

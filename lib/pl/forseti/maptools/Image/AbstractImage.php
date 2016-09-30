@@ -1,13 +1,10 @@
 <?php
-/**
- * @package forseti.pl\maptools
- */
 namespace pl\forseti\maptools\Image;
-
 use pl\forseti\reuse\LogicException;
 use pl\forseti\reuse\FilesystemException;
+use pl\forseti\maptools\CapabilityException;
 
-abstract class aImage
+abstract class AbstractImage
 {
     protected static $library = 'Gd';
 
@@ -30,10 +27,10 @@ abstract class aImage
 
     /**
      * Factory method. Makes an instance of Image subclass.
-     * Concrete type is chosen based on value of self::$library. Use aImage::setLibrary(string) to set it. 'Gd' is assumed.
+     * Concrete type is chosen based on value of self::$library. Use AbstractImage::setLibrary(string) to set it. 'Gd' is assumed.
      * @param mixed ...$args O to 2 arguments. If 0 - only create new object. If 1 - create new object and load the picture given in 1st parameter into it. If 2 - create new object and create new picture with dimensions given in 1st and 2nd parameter.
      * @throws LogicException If number of parameters is greater than 2
-     * @return aImage
+     * @return AbstractImage
      */
     public final static function make(...$args) {
         $obj = new self::$library;
@@ -124,10 +121,10 @@ abstract class aImage
      * @param integer $y Y-coordinate of source point
      * @param integer $w Source width
      * @param integer $h Source height
-     * @param aImage $destImg Destination image
+     * @param AbstractImage $destImg Destination image
      * @param integer $dx Destination image's X-coordinate
      * @param integer $dy Destination image's Y-coordinate
-     * @return aImage Destination image object
+     * @return AbstractImage Destination image object
      */
     abstract public function copyTo($x, $y, $w, $h, $destImg, $dx = 0, $dy = 0);
 

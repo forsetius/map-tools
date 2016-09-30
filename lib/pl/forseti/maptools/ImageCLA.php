@@ -55,7 +55,7 @@ EOH
 		$arr = parent::postproc();
 		
 		// graphics library: GD, ImageMagick czy GMagick
-		aImage::setLibrary($this->g);
+		AbstractImage::setLibrary($this->g);
 		return $arr;
 	}
 }

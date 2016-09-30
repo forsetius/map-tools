@@ -39,7 +39,7 @@ $cla = (new ImageCLA(setupCLA()))->parse();
 extract($cla->postproc());
 
 if ($cla->v > 1) echo "Loading image\n";
-$srcImg = aImage::make($cla->s);
+$srcImg = AbstractImage::make($cla->s);
 $w = $srcImg->getWidth();
 $h = $srcImg->getHeight();
 if ($cla->v > 1) echo "Loaded $w x $h image\n";

@@ -61,7 +61,7 @@ $cla = (new ImageCLA(setupCLA()))->parse();
 extract($cla->postproc());
 
 if ($cla->v > 1) echo "Loading image\n";
-$srcImg = aImage::make($cla->s);
+$srcImg = AbstractImage::make($cla->s);
 $w = $srcImg->getWidth();
 $h = $srcImg->getHeight();
 
@@ -127,7 +127,7 @@ if ($cla->d === true) {
         $nw = ceil($w/$cla->c); // ilość kawałków w poziomie.
         $nh = ceil($h/$cla->c);   // ilość kawałków w pionie
         
-        $tileImg = aImage::make();
+        $tileImg = AbstractImage::make();
         $bm->recMemory('After creation of empty tile object');
         
         if ($cla->v) $pb = new ProgressBar($nw*$nh, '    Slicing the image: ');
@@ -153,7 +153,7 @@ if ($cla->d === true) {
         $bm->rec('Reassembling');
         if ($cla->v) $pb = new ProgressBar($nw*$nh, '    Reassembling cropped: ');
         $bm->recMemory('After new ProgressBar');
-        $destImg = aImage::make($w, $h);
+        $destImg = AbstractImage::make($w, $h);
         $bm->recMemory('After creation of target image');
         
         $dx = 0;

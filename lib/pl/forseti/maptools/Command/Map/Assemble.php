@@ -27,9 +27,9 @@ class Assemble extends AbstractCommand
             $srcPath = $cla->s . DIRECTORY_SEPARATOR . 'level' . $level . DIRECTORY_SEPARATOR;
 
         // stwórz pusty obrazek docelowy
-        $destImg = aImage::make(pow(2,$level)*1024,pow(2,$level)*512);
+        $destImg = AbstractImage::make(pow(2,$level)*1024,pow(2,$level)*512);
 
-        $tileImg = aImage::make(512, 512);
+        $tileImg = AbstractImage::make(512, 512);
         if ($cla->v > 1) $pb = new ProgressBar(pow(2,2*$level+1), '    Slicing the map: ');
         for ($x=0;$x<pow(2,$level+1);$x++) {
             for ($y=0;$y<pow(2,$level);$y++) {

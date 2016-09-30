@@ -35,7 +35,7 @@ $bm->setEcho($cla->v == 3);
 $bm->rec('After parsing CLI, before loading image');
 
 if ($cla->v > 1) echo "Loading image\n";
-$srcImg = aImage::make($cla->s);
+$srcImg = AbstractImage::make($cla->s);
 $w = $srcImg->getWidth();
 $h = $srcImg->getHeight();
 if ($cla->v > 1) echo "Loaded $w x $h image\n";
@@ -43,7 +43,7 @@ if ($cla->v > 1) echo "Loaded $w x $h image\n";
 $bm->rec('Loaded image');
 // swapować za jednym zamachem, oba obrazki (źródłowy i wynikowy) zmieszczą się w pamięci bez bólu
 if ($cla->c === false) {
-    $destImg = aImage::make($w, $h);
+    $destImg = AbstractImage::make($w, $h);
     $bm->recMemory('After creation of target image');
     $srcImg->copyTo(0, 0, ceil($w/2), $h, $destImg->get(), floor($w/2));
     $srcImg->copyTo(ceil($w/2), 0, floor($w/2), $h, $destImg->get());
@@ -64,7 +64,7 @@ if ($cla->c === false) {
     $nw = ceil($w/(2*$cla->c))*2; // ilość kawałków w poziomie. Niech mają max 1024px i niech ich będzie parzysta ilość
     $nh = ceil($h/$cla->c);   // ilość kawałków w pionie
     
-    $tileImg = aImage::make();
+    $tileImg = AbstractImage::make();
     $bm->recMemory('After creation of empty tile object');
     
     if ($cla->v > 1) $pb = new ProgressBar($nw*$nh, '    Slicing the map: ');
@@ -98,7 +98,7 @@ if ($cla->c === false) {
     $bm->rec('Reassembling');
     if ($cla->v > 1) $pb = new ProgressBar($nw*$nh, '    Reassembling swapped map: ');
     $bm->recMemory('After new ProgressBar');
-    $destImg = aImage::make($w, $h);
+    $destImg = AbstractImage::make($w, $h);
     $bm->recMemory('After creation of target image');
 
     $dx = 0;
