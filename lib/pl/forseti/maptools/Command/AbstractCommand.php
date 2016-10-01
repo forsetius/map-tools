@@ -1,7 +1,4 @@
 <?php
-/**
- * @package forseti.pl\maptools
- */
 namespace pl\forseti\maptools\Command;
 
 abstract class AbstractCommand
