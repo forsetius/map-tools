@@ -89,10 +89,10 @@ class Assemble extends AbstractCommand
             $nh = ceil($h/$cla->c);   // ilość kawałków w pionie
 
             $tileImg = AbstractImage::make();
-            $bm->recMemory('After creation of empty tile object');
+            $this->bm->recMemory('After creation of empty tile object');
 
             if ($cla->v) $pb = new ProgressBar($nw*$nh, '    Slicing the image: ');
-            $bm->recMemory('After new ProgressBar');
+            $this->bm->recMemory('After new ProgressBar');
             for ($x = 0; $x < $nw; $x++) {
                 $tw = ($x == $nw) ? $w - ($nw-1)*$cla->c : $cla->c;
                 for ($y = 0; $y < $nh; $y++) {
@@ -104,18 +104,18 @@ class Assemble extends AbstractCommand
                     if ($cla->v) $pb->progress();
                 }
             }
-            $bm->recMemory("\nPo zapisaniu wszystkich kafelków");
+            $this->bm->recMemory("\nPo zapisaniu wszystkich kafelków");
             $srcImg->destroy();
-            $bm->recMemory('After destroying source image');
+            $this->bm->recMemory('After destroying source image');
             $srcImg = null;
-            $bm->recMemory('After null on source object');
+            $this->bm->recMemory('After null on source object');
 
             // and reconstruct
-            $bm->rec('Reassembling');
+            $this->bm->rec('Reassembling');
             if ($cla->v) $pb = new ProgressBar($nw*$nh, '    Reassembling cropped: ');
-            $bm->recMemory('After new ProgressBar');
+            $this->bm->recMemory('After new ProgressBar');
             $destImg = AbstractImage::make($w, $h);
-            $bm->recMemory('After creation of target image');
+            $this->bm->recMemory('After creation of target image');
 
             $dx = 0;
             for ($x = 0; $x < $nw; $x++) {
@@ -133,17 +133,17 @@ class Assemble extends AbstractCommand
                 $dx += $tw;
             }
 
-            $bm->recMemory('Before null on tile object');
+            $this->bm->recMemory('Before null on tile object');
             $tileImg = null;
             if ($cla->v) echo "\n";
 
-            $bm->recMemory('After null on tile object');
+            $this->bm->recMemory('After null on tile object');
             if (substr(strtolower(php_uname('s')),0,3) == 'win') {
                 exec("DEL /S $tempDir");
             } else {
                 exec("rm -rf $tempDir");
             }
-            $bm->recMemory('After null on tile object');
+            $this->bm->recMemory('After null on tile object');
 
             if ($cla->v > 1) echo "Writing\n";
             $destImg->write($cla->o);
