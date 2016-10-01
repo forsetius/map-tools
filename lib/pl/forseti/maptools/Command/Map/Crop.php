@@ -1,18 +1,18 @@
 <?php
 namespace pl\forseti\maptools\Command\Map;
 use pl\forseti\maptools\Command\AbstractCommand;
-use pl\forseti\maptools\CapabilityException;
 use pl\forseti\maptools\Image\AbstractImage;
-use pl\forseti\reuse\Config;
-use pl\forseti\reuse\Benchmark;
 use pl\forseti\cli\Parameter;
-use pl\forseti\cli\Requisite;
 use pl\forseti\cli\ProgressBar;
+use pl\forseti\cli\Flag;
+use pl\forseti\reuse\FilesystemException as FSe;
+use pl\forseti\cli\Option;
 
 class Assemble extends AbstractCommand
 {
     public function execute()
     {
+    	$cla = $this->cla;
         if ($cla->v > 1) echo "Loading image\n";
         $srcImg = AbstractImage::make($cla->s);
         $w = $srcImg->getWidth();

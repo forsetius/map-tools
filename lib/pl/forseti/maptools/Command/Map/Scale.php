@@ -2,11 +2,13 @@
 namespace pl\forseti\maptools\Command\Map;
 use pl\forseti\maptools\Command\AbstractCommand;
 use pl\forseti\cli\Parameter;
+use pl\forseti\maptools\Image\AbstractImage;
 
 class Scale  extends AbstractCommand
 {
     public function execute()
     {
+    	$cla = $this->cla;
         if ($cla->v > 1) echo "Loading image\n";
         $srcImg = AbstractImage::make($cla->s);
         $w = $srcImg->getWidth();

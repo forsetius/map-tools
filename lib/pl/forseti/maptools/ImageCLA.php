@@ -3,7 +3,8 @@
  * @package forseti.pl\maptools
  */
 namespace pl\forseti\maptools;
-use \pl\forseti\cli as CLI;
+use pl\forseti\cli as CLI;
+use pl\forseti\maptools\Image\AbstractImage;
 
 class ImageCLA extends CLI\CLA
 {

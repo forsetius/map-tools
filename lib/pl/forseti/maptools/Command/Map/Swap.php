@@ -4,11 +4,13 @@ use pl\forseti\maptools\Command\AbstractCommand;
 use pl\forseti\cli\ProgressBar;
 use pl\forseti\cli\Option;
 use pl\forseti\reuse\FilesystemException as FSe;
+use pl\forseti\maptools\Image\AbstractImage;
 
 class Swap  extends AbstractCommand
 {
     public function execute()
     {
+    	$cla = $this->cla;
         if ($cla->v > 1) echo "Loading image\n";
         $srcImg = AbstractImage::make($cla->s);
         $w = $srcImg->getWidth();

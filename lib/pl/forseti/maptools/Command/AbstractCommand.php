@@ -1,6 +1,9 @@
 <?php
 namespace pl\forseti\maptools\Command;
 
+use pl\forseti\reuse\Benchmark;
+use pl\forseti\maptools\ImageCLA;
+
 abstract class AbstractCommand
 {
     protected $bm;

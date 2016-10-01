@@ -5,6 +5,8 @@ use pl\forseti\cli\Parameter;
 use pl\forseti\cli\ProgressBar;
 use pl\forseti\reuse\FilesystemException as FSe;
 use pl\forseti\reuse\Config;
+use pl\forseti\maptools\Image\AbstractImage;
+use pl\forseti\maptools\CapabilityException;
 
 class Texturize  extends AbstractCommand
 {
