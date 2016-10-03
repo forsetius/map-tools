@@ -1,6 +1,6 @@
 <?php
-use pl\forseti\cli\TestTask;
-use pl\forseti\cli\SyntaxException;
+use forsetius\cli\TestTask;
+use forsetius\cli\SyntaxException;
 
 $l = new TestTask('l');
 $l->setVarsOk(['3','0',3]);

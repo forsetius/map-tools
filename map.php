@@ -1,19 +1,20 @@
 #!/usr/bin/env php
 <?php
-require_once __DIR__.'/lib/autoload.php';
+require_once __DIR__.'/src/autoload.php';
 
-use pl\forseti\reuse\Config;
-use pl\forseti\reuse\Benchmark;
-use pl\forseti\maptools\Command as cmd;
+use forsetius\reuse\Config;
+use forsetius\reuse\Benchmark;
+use forsetius\maptools\Command as cmd;
 
 $conf = new Config(__DIR__.'/config.php');
 $bm = Benchmark::getInstance();
 
-$command = ucfirst($argv[1]);
+$fallback = 'forsetius\maptools\Command\Help';
+$command = 'forsetius\maptools\Command\\' . ((\count($argv) > 1) ? 'Map\\'. ucfirst($argv[1]) : $fallback);
 try {
-    $cmd = new cmd/Map/$command($conf);
+    $cmd = new $command($conf);
 } catch (\Exception $e) {
-    $cmd = new cmd/Help();
+    $cmd = new $fallback();
 }
 $cla = $cmd->getCLA();
 

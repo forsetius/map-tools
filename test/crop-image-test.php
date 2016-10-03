@@ -1,6 +1,6 @@
 <?php
-use pl\forseti\cli\SyntaxException;
-use pl\forseti\maptools\CapabilityException;
+use forsetius\cli\SyntaxException;
+use forsetius\maptools\CapabilityException;
 $tasks = array(
     ['',SyntaxException::REQUIRED_VALUE],
     ['-s "test.png" -g #g#',0],

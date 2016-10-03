@@ -1,9 +1,9 @@
 <?php
-namespace pl\forseti\maptools;
+namespace forsetius\maptools;
 require_once __DIR__.'/lib/autoload.php';
 
-use pl\forseti\reuse\Benchmark;
-use pl\forseti\reuse\LogicException;
+use forsetius\reuse\Benchmark;
+use forsetius\reuse\LogicException;
 
 throw new LogicException('', LogicException::NOT_IMPLEMENTED);
 // TODO scheduled in v2.0

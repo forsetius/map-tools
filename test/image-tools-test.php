@@ -1,8 +1,8 @@
 <?php
-use pl\forseti\cli\TestTask;
-use pl\forseti\maptools\CapabilityException;
-use pl\forseti\cli\SyntaxException;
-use pl\forseti\reuse\FilesystemException;
+use forsetius\cli\TestTask;
+use forsetius\maptools\CapabilityException;
+use forsetius\cli\SyntaxException;
+use forsetius\reuse\FilesystemException;
 
 $s = new TestTask('s');
 $s->setVarsOk(['mars','../assemble-image/mars']);

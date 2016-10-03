@@ -1,6 +1,6 @@
 <?php
-use pl\forseti\cli\TestTask;
-use pl\forseti\cli\SyntaxException as SEx;
+use forsetius\cli\TestTask;
+use forsetius\cli\SyntaxException as SEx;
 
 $help = new TestTask('help');
 $help->setCases([['--help',0], ['-help',SEx::BAD_SYNTAX], ['--help incorrect',SEx::VALUE_NOT_ALLOWED], ['-s #s# --help',0]]);
