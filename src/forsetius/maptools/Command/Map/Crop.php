@@ -7,6 +7,8 @@ use forsetius\cli\ProgressBar;
 use forsetius\cli\Flag;
 use forsetius\reuse\FilesystemException as FSe;
 use forsetius\cli\Option;
+use forsetius\reuse\GlobalPool as Pool;
+
 
 class Assemble extends AbstractCommand
 {
@@ -176,7 +178,7 @@ EOH
         $b = new Parameter('b', 0);
         $b->setValid($uint)->setAlias('bottom')->setHelp('bottom-margin',"Bottom margin");
 
-        $tile = $this->conf->defTileSize;
+        $tile = Pool::getConf()->defTileSize;
         $c = new Option('c', $tile);
         $c->setValid($uint + ['min'=>64])->setAlias('cut');
         $c->setHelp('tile-size',<<<EOH

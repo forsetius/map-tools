@@ -5,6 +5,8 @@ use forsetius\cli\ProgressBar;
 use forsetius\cli\Option;
 use forsetius\reuse\FilesystemException as FSe;
 use forsetius\maptools\Image\AbstractImage;
+use forsetius\reuse\GlobalPool as Pool;
+
 
 class Swap  extends AbstractCommand
 {
@@ -124,7 +126,7 @@ class Swap  extends AbstractCommand
 
     protected function setup()
     {
-        $c = new Option('c', $this->conf->defTileSize);
+        $c = new Option('c', Pool::getConf()->defTileSize);
         $c->setValid(['class'=>'uint','min'=>64])->setAlias('cut');
         $c->setHelp('tile-size', <<<EOH
         Swap halves of the image by cutting it into smaller pieces

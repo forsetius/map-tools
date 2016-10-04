@@ -1,20 +1,15 @@
 <?php
 namespace forsetius\maptools\Command;
 
-use forsetius\reuse\Benchmark;
 use forsetius\maptools\ImageCLA;
 
 abstract class AbstractCommand
 {
-    protected $bm;
     protected $cla;
-    protected $conf;
 
-    public function __construct($conf)
+    public function __construct()
     {
-        $this->bm = Benchmark::getInstance();
-        $this->conf = $conf;
-        $this->cla = (new ImageCLA($conf, $this->setup()))->parse();
+        $this->cla = (new ImageCLA($this->setup()))->parse();
     }
 
     public function getCLA()

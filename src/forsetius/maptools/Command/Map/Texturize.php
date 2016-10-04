@@ -4,9 +4,10 @@ use forsetius\maptools\Command\AbstractCommand;
 use forsetius\cli\Parameter;
 use forsetius\cli\ProgressBar;
 use forsetius\reuse\FilesystemException as FSe;
-use forsetius\reuse\Config;
 use forsetius\maptools\Image\AbstractImage;
 use forsetius\maptools\CapabilityException;
+use forsetius\reuse\GlobalPool as Pool;
+
 
 class Texturize  extends AbstractCommand
 {
@@ -122,11 +123,11 @@ EOF;
 EOH
         );
 
-        $t = new Parameter('t', $this->conf->defOutputTxName);
+        $t = new Parameter('t', Pool::getConf()->defOutputTxName);
         $t->setValid(['class'=>'alnum'])->setAlias('texture');
         $t->setHelp('texture-name', <<<EOH
                     Name of Virtual Texture within the addon
-                    Optional parameter -  if not provided, default '{$this->conf->defOutputTxName}' is used.
+                    Optional parameter -  if not provided, default '{Pool::getConf()->defOutputTxName}' is used.
                     If name contains ? character, it will be substituted with map size.
 EOH
         );

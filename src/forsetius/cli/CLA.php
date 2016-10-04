@@ -4,6 +4,7 @@ namespace forsetius\cli;
 use forsetius\reuse\Help;
 use forsetius\reuse\Collection;
 use forsetius\reuse\LogicException;
+use forsetius\reuse\GlobalPool as Pool;
 
 /**
  * Command Line Arguments
@@ -11,21 +12,23 @@ use forsetius\reuse\LogicException;
 class CLA
 {
     protected $args;
-    protected $conf;
 
-    public function __construct(Config $conf, array $args = array())
+    public function __construct(array $args = array())
     {
-    	$args->conf = $conf;
         $this->args = new Collection('forsetius\cli\aArgument');
 
-        $v = new Option('v', $this->conf->defVerbosity);
+        $v = new Option('v', Pool::getConf()->defVerbosity);
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
         $v->setHelp('level',<<<EOH
 Verbosity level:
- 0. Quiet: won't issue any messages. Exit status is still available
- 1. Severe (default): only errors and warning messages will be issued
- 2. Notices: progress reporting messages will be printed
- 3. Benchmark: also timings and memory readings will be available
+ 0. Quiet    - won't issue any messages. Exit status will be available
+ 1. Alert    - not used
+ 2. Critical - not used
+ 3. Errors   - crash reasons
+ 4. Warnings - information on important assumptions taken on non-conformant images
+ 5. Notices  - important info on operations with successful outcome
+ 6. Info     - progress reports
+ 7. Debug    - timings and memory benchmarks will be available
 EOH
         );
 
@@ -35,7 +38,7 @@ EOH
         $help = new Flag('help');
         $help->setHelp('',"Print this help");
 
-        $test = new Option('test', $this->conf->defTestMode);
+        $test = new Option('test', Pool::getConf()->defTestMode);
     	$test->setHelp('', <<<EOH
 Enter developer mode suitable for batch-testing. Options:
 --test
@@ -131,6 +134,7 @@ EOH
 
     public function __get($name)
     {
+    	// TODO exception
     	return $this->args[$name]->getValue();
     }
 
@@ -142,9 +146,12 @@ EOH
 
     public function postproc()
     {
+    	if ($this->v) {
+    		$log->setLogLevelThreshold(constant('Psr\Log\LogLevel::'. \strtoupper($this->v)));
+    	}
     	if ($this->help) Help::printTerm($GLOBALS['argv'][0]);
     	if ($this->version) {
-    	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . $this->conf->appVersion . "\n";
+    	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . Pool::getConf()->appVersion . "\n";
     	    exit(0);
     	}
     	if ($this->test !== false) {

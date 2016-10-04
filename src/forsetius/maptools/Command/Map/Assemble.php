@@ -3,11 +3,10 @@ namespace forsetius\maptools\Command\Map;
 use forsetius\maptools\Command\AbstractCommand;
 use forsetius\maptools\CapabilityException;
 use forsetius\maptools\Image\AbstractImage;
-use forsetius\reuse\Config;
-use forsetius\reuse\Benchmark;
 use forsetius\cli\Parameter;
 use forsetius\cli\Requisite;
 use forsetius\cli\ProgressBar;
+use forsetius\reuse\GlobalPool as Pool;
 
 class Assemble extends AbstractCommand
 {
@@ -60,12 +59,12 @@ EOH1
         $lambda = function ($val) {
             return \str_replace('?', pow(2, $GLOBALS['level']), $val);
         };
-        $o = new Parameter('o',$this->conf->defOutputMapName);
+        $o = new Parameter('o',Pool::getConf()->defOutputMapName);
         $o->setValid(['class'=>'dirpath'])->setAlias('output')->setTransform($lambda);
         $o->setHelp('output-image', <<<EOH2
                     A path and filename for output image
                     Optional parameter - if not provided,
-                    `{$this->conf->defOutputMapName}` is used.
+                    `{Pool::getConf()->defOutputMapName}` is used.
 EOH2
         );
 
