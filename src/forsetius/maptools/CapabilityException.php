@@ -22,7 +22,7 @@ class CapabilityException extends aException
     {
         $script = \basename($GLOBALS['argv'][0]);
         
-        echo "Incorrect option:\n$message.\nSee: `$script --help` for more information\n";
+        $message = "Incorrect option:\n$message.\nSee: `$script --help` for more information\n";
         parent::__construct($message, $code, $previous);
     }
 }

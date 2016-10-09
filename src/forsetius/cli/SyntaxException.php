@@ -8,7 +8,7 @@ use forsetius\reuse\aException;
  * Used to cover the cases strictly connected to syntactic correctness of
  * script parameters and presence of required parameters and values.
  * @author forseti
- * 
+ *
  */
 class SyntaxException extends aException
 {
@@ -22,7 +22,7 @@ class SyntaxException extends aException
     {
         $script = \basename($GLOBALS['argv'][0]);
 
-        echo "Invalid syntax: $message \nSee: `$script --help` for more information\n";
+        $message = "Invalid syntax: $message \nSee: `$script --help` for more information\n";
         parent::__construct($message, $code, $previous);
     }
 }

@@ -19,7 +19,7 @@ spl_autoload_register(function( $class ) {
 });
 
 set_exception_handler(function(Exception $e) {
-    echo $e->getTraceAsString() ."\n";
+	echo $e->getMessage();
     error_log(\basename($GLOBALS['argv'][0]) . ';'. date('Y-m-d H:i:s') .';'. $e->getCode() .';'. $e->getName() .';'. $e->getMessage() .';'. $e->getFile() .';'. $e->getLine() ."\n", 3, 'error.log');
     exit ($e->getCode());
 });

@@ -21,8 +21,7 @@ class LogicException extends aException
     
     public function __construct ($message = "", $code = self::FAULTY_LOGIC, \Exception $previous = NULL)
     {
-        echo "Internal script error. Please send the `error.log` file to forseti.pl@gmail.com\n";
-        echo $message;
+    	$message = "Internal script error. Please send the `error.log` file to forseti.pl@gmail.com\n$message";
         parent::__construct($message, $code, $previous);
     }
 }

@@ -12,7 +12,7 @@ class FilesystemException extends aException
 
     public function __construct ($message = "", $code, \Exception $previous = NULL)
     {
-        echo "Filesystem issue:\n$message.\n";
+        $message = "Filesystem issue:\n$message.\n";
         parent::__construct($message, $code, $previous);
     }
 }

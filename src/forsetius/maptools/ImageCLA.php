@@ -18,11 +18,12 @@ class ImageCLA extends CLI\CLA
 	    $s->setValid(['class'=>'filepath'])->setAlias('source');
 	    $s->setHelp('source-path', 'Path and filename to source image');
 	    
+    	$verb = new CLI\Verb('command');
+    	$verb->setValid(['set'=>Pool::getConf()->get('app:module:'. Pool::getModule() .':command')]);
+    	$verb->setHelp('command',''); //TODO
+    	
 	    $outputName = function($val)
 	    {
-	    	$verb = new CLI\Verb('command');
-	    	$verb->setValid(['set'=>Pool::getConf()->get('app:module:'. Pool::getModule() .':command')]);
-	    	$verb->setHelp(); //TODO
 	    	
 	        $s = $GLOBALS['cla']->s;
 	        if (\strpos($val, '?') !== false) {
