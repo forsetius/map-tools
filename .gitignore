@@ -4,8 +4,5 @@ info.txt
 doc/
 .settings/
 *.log
-/t1.php
-/t2.php
-/t3.php
-
-/vendor/
+vendor/*
+composer.lock
