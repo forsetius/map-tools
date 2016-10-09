@@ -10,7 +10,7 @@ abstract class AbstractCommand
     public function __construct()
     {
     	$claClass = Pool::getConf()->get('app:module:'. Pool::getModule(). ':cla');
-        $this->cla = (new $claClass($this->setup()))->parse();
+        $this->cla = (new $claClass($this->setup()))->parse(); // CHECK
     }
 
     public function getCLA()
