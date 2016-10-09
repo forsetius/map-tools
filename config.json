@@ -1,0 +1,37 @@
+{
+	"app": {
+		"name": "map-tools",
+		"version": "2.0-alpha1",
+		"module": {
+			"map": {
+					"ns": "forsetius\\maptools\\Command\\Map\\",
+					"cla": "forsetius\\maptools\\ImageCLA",
+					"command": ["assemble", "crop", "merge", "scale", "swap", "texturize"]
+			},
+			"region": {
+					"ns": "forsetius\\maptools\\Command\\Region\\",
+					"cla": "forsetius\\maptools\\RegionCLA",
+					"command": ["define", "extract", "merge"]
+			},
+			"_core":  {
+					"ns": "forsetius\\maptools\\Command\\",
+					"cla": "forsetius\\cli\\CLA",
+					"command": ["help"]
+			}
+		}
+	},
+	"gfx": {
+		"libs": 	["gd", "imagick"],
+ 	    "formats":	["jpeg", "png"]
+	},
+	"default":	{
+	    "outputImgName": 	"modified-?",
+	    "outputMapName": 	"map?k.png",
+	    "outputTxName": 	"map",
+	    "gfxLib": 			"gd",
+	    "tileSize":   		1024,
+	    "cutToTiles": 		false,
+	    "verbosity": 		"DEBUG",
+	    "testMode": 		"all"
+	}
+}

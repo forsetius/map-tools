@@ -1,6 +1,6 @@
 <?php
 namespace forsetius\maptools\Command\Map;
-use forsetius\maptools\Command\AbstractCommand;
+use forsetius\cli\Command\AbstractCommand;
 use forsetius\maptools\Image\AbstractImage;
 use forsetius\cli\Parameter;
 use forsetius\cli\ProgressBar;
@@ -178,7 +178,7 @@ EOH
         $b = new Parameter('b', 0);
         $b->setValid($uint)->setAlias('bottom')->setHelp('bottom-margin',"Bottom margin");
 
-        $tile = Pool::getConf()->defTileSize;
+        $tile = Pool::getConf()->get("default:tileSize");
         $c = new Option('c', $tile);
         $c->setValid($uint + ['min'=>64])->setAlias('cut');
         $c->setHelp('tile-size',<<<EOH

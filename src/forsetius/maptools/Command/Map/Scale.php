@@ -1,6 +1,6 @@
 <?php
 namespace forsetius\maptools\Command\Map;
-use forsetius\maptools\Command\AbstractCommand;
+use forsetius\cli\Command\AbstractCommand;
 use forsetius\cli\Parameter;
 use forsetius\maptools\Image\AbstractImage;
 

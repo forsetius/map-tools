@@ -4,38 +4,39 @@
  */
 namespace forsetius\reuse;
 
-use forsetius\maptools\CapabilityException;
 class Config
 {
-    protected $app = array();
-    protected $cap = array();
-    protected $con = array();
-    protected $def = array();
+    protected $conf;
     
     public function __construct($configFile)
     {
-        if (! \file_exists($configFile))
-            throw new FilesystemException("Config file `$configFile` not found", FilesystemException::FILE_NOT_FOUND);
+    	if (! file_exists($configFile))
+    		throw new FilesystemException("Config file `$configFile` was not found", FilesystemException::FILE_NOT_FOUND);
+    	
+    	$conf = file_get_contents($configFile);
+        if ($conf === false)
+            throw new FilesystemException("Config file `$configFile` is unavailable", FilesystemException::ACCESS_DENIED);
         
-        require_once $configFile;
-        $this->app = $app;
-        $this->cap = $capabilities;
-        $this->con = $connections;
-        $this->def = $defaults;
+        $conf = json_decode($conf, true);
+        if ($conf === null)
+        	throw new FilesystemException("Invalid JSON in config file", FilesystemException::INVALID_CONTENT);
+
+        $this->conf = $conf;
     }
     
-    public function __get($key)
+    public function get($key)
     {
-        $pref = \substr($key, 0, 3);
-        if (! isset($this->$pref))
-            throw new CapabilityException("No such configuration prefix `$pref`", CapabilityException::CONFIG_ISSUE);
-        
-        $prefix = $this->$pref;
-        $key = (\substr($key, 3));
-        if (! \array_key_exists($key, $prefix))
-            throw new CapabilityException("No configuration key `$key` with prefix `$pref`", CapabilityException::CONFIG_ISSUE);
-        
-        return $prefix[$key];
+    	$arr = (array) explode(':',	$key);
+    	$val = $this->conf;
+    	foreach ($arr as $elem) {
+    		if (! key_exists($elem, $val)) {
+    			var_dump($elem, $val);
+    			throw new LogicException("Part `$elem` of `$key` key not found", LogicException::CONFIG_ERROR);
+    		}
+    		$val = $val[$elem];
+    	}
+    	
+        return $val;
     }
 }
  ?>

@@ -1,5 +1,5 @@
 <?php
-namespace forsetius\reuse;
+namespace forsetius\cli;
 
 use forsetius\reuse\FilesystemException as FSe;
 
@@ -9,7 +9,7 @@ use forsetius\reuse\FilesystemException as FSe;
 class Help
 {
 	public static function printTerm() {
-		$help = self::getFile($GLOBALS['argv'][0]);
+		$help = self::getFile($GLOBALS['argv'][1]);
 		foreach (self::getTermSubsts() as $tag=>$subst) {
 			$help = str_ireplace($tag, $subst, $help);
 		}

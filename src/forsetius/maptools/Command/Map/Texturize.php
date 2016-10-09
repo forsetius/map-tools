@@ -1,6 +1,6 @@
 <?php
 namespace forsetius\maptools\Command\Map;
-use forsetius\maptools\Command\AbstractCommand;
+use forsetius\cli\Command\AbstractCommand;
 use forsetius\cli\Parameter;
 use forsetius\cli\ProgressBar;
 use forsetius\reuse\FilesystemException as FSe;
@@ -123,11 +123,12 @@ EOF;
 EOH
         );
 
-        $t = new Parameter('t', Pool::getConf()->defOutputTxName);
+        $tx = Pool::getConf()->get("default:outputTxName");
+        $t = new Parameter('t', $tx);
         $t->setValid(['class'=>'alnum'])->setAlias('texture');
         $t->setHelp('texture-name', <<<EOH
                     Name of Virtual Texture within the addon
-                    Optional parameter -  if not provided, default '{Pool::getConf()->defOutputTxName}' is used.
+                    Optional parameter -  if not provided, default '$tx' is used.
                     If name contains ? character, it will be substituted with map size.
 EOH
         );

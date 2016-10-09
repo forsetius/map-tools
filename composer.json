@@ -3,8 +3,7 @@
 	"description" : "Utilities for working with big images and converting them to Celestia's virtual texture",
 	"type" : "project",
 	"require" : {
-		"katzgrau/klogger" : "^1.2",
-		"devster/ubench" : "~1.2"
+		"katzgrau/klogger" : "^1.2"
 	},
 	"license" : "MIT",
 	"authors" : [{

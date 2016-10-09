@@ -1,7 +1,7 @@
 <?php
 namespace forsetius\cli;
 
-use forsetius\reuse\Help;
+use forsetius\cli\Help;
 use forsetius\reuse\Collection;
 use forsetius\reuse\LogicException;
 use forsetius\reuse\GlobalPool as Pool;
@@ -16,8 +16,8 @@ class CLA
     public function __construct(array $args = array())
     {
         $this->args = new Collection('forsetius\cli\aArgument');
-
-        $v = new Option('v', Pool::getConf()->defVerbosity);
+        
+        $v = new Option('v', Pool::getConf()->get("default:verbosity"));
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
         $v->setHelp('level',<<<EOH
 Verbosity level:
@@ -38,7 +38,7 @@ EOH
         $help = new Flag('help');
         $help->setHelp('',"Print this help");
 
-        $test = new Option('test', Pool::getConf()->defTestMode);
+        $test = new Option('test', Pool::getConf()->get("default:testMode"));
     	$test->setHelp('', <<<EOH
 Enter developer mode suitable for batch-testing. Options:
 --test
@@ -57,8 +57,7 @@ EOH
 
     public function addArg(aArgument $arg)
     {
-        $name = $arg->getName();
-        $this->args[$name] = $arg;
+        $this->args[$arg->getName()] = $arg;
 
         return $this;
     }
@@ -74,7 +73,7 @@ EOH
 
     /**
      * Parse the command line arguments supplied to the CLI script.
-     * Note: switch-type arguments that do no accept values (are either set or not set, like -v or --verbose)
+     * Note: switch-type arguments that do not accept values (are either set or not set, like -v or --verbose)
      * are set to 'arg'=>true if specified as command line argument to the script.
      * They should have 'false' as default value, meaning they were not specified in command line.
      * This is opposite of getopt behavior but is more logical.
@@ -84,17 +83,22 @@ EOH
      */
     public function parse()
     {
+        // check if first parameter is verb
+        if ($this->hasArgument('command')) {
+        	$this->args['command']->setValue($GLOBALS['argv'][1]);
+	        $i = 2;
+        } else {
+        	$i = 1;
+        }
+        
         $allowedArgs = array();
         foreach ($this->args as $argName=>&$arg) {
-            $allowedArgs[$argName] = $arg;
-
-            foreach ((array) $arg->getAlias() as $alias) {
-                $allowedArgs[$alias] = $arg;
-            }
+        	$names = $arg->getAlias();
+        	array_unshift($names, $arg->getName());
+        	$allowedArgs = array_merge($allowedArgs, array_fill_keys($names, $arg));
         }
 
-        $i = 1;
-        $max = count($GLOBALS['argv'])-1;
+        $max = $GLOBALS['argc']-$i;
         while ($i <= $max) {
             // Disallow arguments like '---any', '--s' and '-long'
             $argName = $this->getArgumentName($GLOBALS['argv'][$i]);
@@ -131,6 +135,11 @@ EOH
         }
         return ($str == $name) ? false : $name;
     }
+    
+    public function hasArgument($name)
+    {
+    	return (key_exists($name, $this->args));
+    }
 
     public function __get($name)
     {
@@ -149,11 +158,15 @@ EOH
     	if ($this->v) {
     		$log->setLogLevelThreshold(constant('Psr\Log\LogLevel::'. \strtoupper($this->v)));
     	}
-    	if ($this->help) Help::printTerm($GLOBALS['argv'][0]);
+    	
+    	if ($this->help)
+    		throw new Exception('Help requested');
+    	
     	if ($this->version) {
-    	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . Pool::getConf()->appVersion . "\n";
+    	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . Pool::getConf()->get("app:version") . "\n";
     	    exit(0);
     	}
+    	
     	if ($this->test !== false) {
     	    $test = new Test();
     	    $test->addTasks(require \dirname($_SERVER['PHP_SELF']) . '/test/common-test.php');

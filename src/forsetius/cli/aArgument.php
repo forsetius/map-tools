@@ -24,9 +24,9 @@ use forsetius\reuse\FilesystemException;
 abstract class aArgument implements iNamed
 {
     protected $name;
-    protected $alias;
+    protected $alias = [];
     protected $value;
-    protected $transform;
+    protected $transform = null;
     protected $valid = array();
     protected $help;
     
@@ -47,7 +47,6 @@ abstract class aArgument implements iNamed
     {
         $this->name = $name;
         $this->value = $default;
-        $this->transform = null;
     }
 
     public function setValid(array $valid)
@@ -75,7 +74,7 @@ abstract class aArgument implements iNamed
         $this->alias = (array) $alias;
         return $this;
     }
-    
+       
     public function getValue()
     {
         if (! is_null($this->transform)) {
@@ -149,8 +148,8 @@ abstract class aArgument implements iNamed
                     throw new SyntaxException("Value of parameter `{$this->name} is too high. Maximal value is: ". $this->valid['max'], SyntaxException::INVALID_VALUE);
             }
             if (\array_key_exists('set', $this->valid)) {
-                if (! \in_array($this->value, $this->valid['set']))
-                    throw new SyntaxException("Value of parameter `{$this->name} must be one of: ". \implode(', ', $this->valid['set']), SyntaxException::INVALID_VALUE);
+                if (! \in_array($val, $this->valid['set']))
+                    throw new SyntaxException("Value of parameter `{$this->name}` is `{$this->value}` while must be one of: ". \implode(', ', $this->valid['set']), SyntaxException::INVALID_VALUE);
             }
             
             if (\array_key_exists('class', $this->valid)) {

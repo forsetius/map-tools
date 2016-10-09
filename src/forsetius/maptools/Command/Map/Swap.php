@@ -1,6 +1,6 @@
 <?php
 namespace forsetius\maptools\Command\Map;
-use forsetius\maptools\Command\AbstractCommand;
+use forsetius\cli\Command\AbstractCommand;
 use forsetius\cli\ProgressBar;
 use forsetius\cli\Option;
 use forsetius\reuse\FilesystemException as FSe;
@@ -126,14 +126,15 @@ class Swap  extends AbstractCommand
 
     protected function setup()
     {
-        $c = new Option('c', Pool::getConf()->defTileSize);
+    	$tile = Pool::getConf()->get("default:tileSize");
+        $c = new Option('c', $tile);
         $c->setValid(['class'=>'uint','min'=>64])->setAlias('cut');
         $c->setHelp('tile-size', <<<EOH
         Swap halves of the image by cutting it into smaller pieces
             and reassembling swapped afterwards.
             Option. If not used, image is swapped in one piece (requires
             more memory but is quicker). If used, by default the image is
-            cut into tiles not bigger than 1024x1024 px. Optional value
+            cut into tiles not bigger than $tile*$tile px. Optional value
             can be specified if different tile dimensions are required.
 EOH
         );

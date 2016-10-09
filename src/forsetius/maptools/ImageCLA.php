@@ -20,6 +20,10 @@ class ImageCLA extends CLI\CLA
 	    
 	    $outputName = function($val)
 	    {
+	    	$verb = new CLI\Verb('command');
+	    	$verb->setValid(['set'=>Pool::getConf()->get('app:module:'. Pool::getModule() .':command')]);
+	    	$verb->setHelp(); //TODO
+	    	
 	        $s = $GLOBALS['cla']->s;
 	        if (\strpos($val, '?') !== false) {
 	            $out = \pathinfo($val, PATHINFO_DIRNAME);
@@ -35,11 +39,11 @@ class ImageCLA extends CLI\CLA
 	        return $val;
 	    };
 	    
-	    $o = new CLI\Parameter('o', Pool::getConf()->defOutputImgName);
+	    $o = new CLI\Parameter('o', Pool::getConf()->get("default:outputImgName"));
 	    $o->setValid(['class'=>'dirpath'])->setAlias('output')->setTransform($outputName);
 	    $o->setHelp('output-path', 'Path and filename to output image');
 	    
-	    $g = new CLI\Parameter('g', Pool::getConf()->defGfxLib);
+	    $g = new CLI\Parameter('g', Pool::getConf()->get("default:gfxLib"));
 	    $g->setValid(['set'=>['gd','imagick']])->setAlias('gfx');
 	    $g->setHelp('library-name',<<<EOH
 Graphics manipulation library to use. Only libraries installed on your system can be used.
@@ -50,7 +54,7 @@ Supported libraries are:
 EOH
 	    );
 	    
-        parent::__construct(array_merge([$s, $g, $o], $options));
+        parent::__construct(array_merge([$verb, $s, $g, $o], $options));
 	}
 	
 	public function postproc() {

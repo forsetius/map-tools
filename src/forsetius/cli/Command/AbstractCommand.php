@@ -1,7 +1,7 @@
 <?php
-namespace forsetius\maptools\Command;
+namespace forsetius\cli\Command;
 
-use forsetius\maptools\ImageCLA;
+use forsetius\reuse\GlobalPool as Pool;
 
 abstract class AbstractCommand
 {
@@ -9,7 +9,8 @@ abstract class AbstractCommand
 
     public function __construct()
     {
-        $this->cla = (new ImageCLA($this->setup()))->parse();
+    	$claClass = Pool::getConf()->get('app:module:'. Pool::getModule(). ':cla');
+        $this->cla = (new $claClass($this->setup()))->parse();
     }
 
     public function getCLA()
