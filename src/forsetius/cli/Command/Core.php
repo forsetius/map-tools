@@ -4,7 +4,7 @@ use forsetius\reuse\GlobalPool as Pool;
 use forsetius\reuse\FilesystemException as FSe;
 use forsetius\cli\Parameter;
 
-class Help extends AbstractCommand
+class Core extends AbstractCommand
 {
 	public function __construct()
 	{

@@ -4,6 +4,7 @@ namespace forsetius\cli;
 use forsetius\cli\Help;
 use forsetius\reuse\Collection;
 use forsetius\reuse\LogicException;
+use forsetius\cli\SyntaxException;
 use forsetius\reuse\GlobalPool as Pool;
 
 /**
@@ -124,6 +125,7 @@ EOH
             } else throw new SyntaxException("Wrong syntax of `{$GLOBALS['argv'][$i][0]}` argument", SyntaxException::BAD_SYNTAX);
         }
 
+        $this->postproc();
         return $this;
     }
 
@@ -160,10 +162,10 @@ EOH
     	}
     	
     	if ($this->help)
-    		throw new Exception('Help requested');
+    		throw new SyntaxException('Help requested');
     	
     	if ($this->version) {
-    	    echo \pathinfo($GLOBALS['argv'][0], PATHINFO_FILENAME) . ' from map-tools ' . Pool::getConf()->get("app:version") . "\n";
+    	    echo 'map-tools ' . Pool::getConf()->get("app:version") . "\n";
     	    exit(0);
     	}
     	
