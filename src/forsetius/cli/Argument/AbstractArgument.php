@@ -1,5 +1,5 @@
 <?php
-namespace forsetius\cli;
+namespace forsetius\cli\Argument;
 
 use forsetius\reuse\LogicException;
 use forsetius\reuse\iNamed;
@@ -8,7 +8,7 @@ use forsetius\reuse\FilesystemException;
 /**
  * Command-line argument.
  * Every argument must have a value - either specified by the user
- * when invoking the script or default one. There are three types of
+ * when invoking the script or default one. There are five types of
  * arguments:
  * - Flag - a switch used to turn option on or off. Default: false (off)
  * - Parameter - argument intended to provide value. Must have default used
@@ -17,11 +17,13 @@ use forsetius\reuse\FilesystemException;
  * feature and user can optionally provide value. Default: false (off) and
  * also another default must be provided in case if user specifies argument
  * without value
+ * - Requisite - Paramater that must be provided as it has no default
+ * - Verb - first, required argument after the script name
  *
  * @author forseti
  *
  */
-abstract class aArgument implements iNamed
+abstract class AbstractArgument implements iNamed
 {
     protected $name;
     protected $alias = [];

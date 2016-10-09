@@ -2,11 +2,11 @@
 namespace forsetius\maptools\Command\Map;
 use forsetius\cli\Command\AbstractCommand;
 use forsetius\maptools\Image\AbstractImage;
-use forsetius\cli\Parameter;
+use forsetius\cli\Argument\Parameter;
 use forsetius\cli\ProgressBar;
-use forsetius\cli\Flag;
+use forsetius\cli\Argument\Flag;
 use forsetius\reuse\FilesystemException as FSe;
-use forsetius\cli\Option;
+use forsetius\cli\Argument\Option;
 use forsetius\reuse\GlobalPool as Pool;
 
 

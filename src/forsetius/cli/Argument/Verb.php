@@ -1,5 +1,5 @@
 <?php
-namespace forsetius\cli;
+namespace forsetius\cli\Argument;
 
 /**
  * Command-line parameter used to introduce some value.
@@ -8,7 +8,7 @@ namespace forsetius\cli;
  * @author forseti
  *
  */
-class Verb extends aArgument
+class Verb extends AbstractArgument
 {
 	public function __construct()
 	{

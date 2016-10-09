@@ -16,9 +16,9 @@ class CLA
 
     public function __construct(array $args = array())
     {
-        $this->args = new Collection('forsetius\cli\aArgument');
+        $this->args = new Collection('forsetius\cli\Argument\AbstractArgument');
         
-        $v = new Option('v', Pool::getConf()->get("default:verbosity"));
+        $v = new Argument\Option('v', Pool::getConf()->get("default:verbosity"));
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
         $v->setHelp('level',<<<EOH
 Verbosity level:
@@ -33,13 +33,13 @@ Verbosity level:
 EOH
         );
 
-        $version = new Flag('version');
+        $version = new Argument\Flag('version');
         $version->setHelp('',"Print this script suite's version");
 
-        $help = new Flag('help');
+        $help = new Argument\Flag('help');
         $help->setHelp('',"Print this help");
 
-        $test = new Option('test', Pool::getConf()->get("default:testMode"));
+        $test = new Argument\Option('test', Pool::getConf()->get("default:testMode"));
     	$test->setHelp('', <<<EOH
 Enter developer mode suitable for batch-testing. Options:
 --test
@@ -56,7 +56,7 @@ EOH
         $this->addArgs(array_merge([$v, $version, $help, $test], $args));
     }
 
-    public function addArg(aArgument $arg)
+    public function addArg(Argument\AbstractArgument $arg)
     {
         $this->args[$arg->getName()] = $arg;
 
@@ -111,7 +111,7 @@ EOH
                     if (($i < $max) && $GLOBALS['argv'][$i+1]=='') {
                         throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
                     }
-                    // if argument without value then set it to true. Classes derived from aArgument will decide if it's correct later
+                    // if argument without value then set it to true. Classes derived from AbstractArgument will decide if it's correct later
                     elseif ($i == $max || ($this->getArgumentName($GLOBALS['argv'][$i+1]) !== false)) {
                         $allowedArgs[$argName]->setValue(true);
                         $i++;

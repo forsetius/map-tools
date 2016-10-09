@@ -2,7 +2,7 @@
 namespace forsetius\cli\Command;
 use forsetius\reuse\GlobalPool as Pool;
 use forsetius\reuse\FilesystemException as FSe;
-use forsetius\cli\Parameter;
+use forsetius\cli\Argument\Parameter;
 
 class Core extends AbstractCommand
 {

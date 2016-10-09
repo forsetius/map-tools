@@ -3,22 +3,23 @@
  * @package forseti.pl\maptools
  */
 namespace forsetius\maptools;
-use forsetius\cli as CLI;
+use forsetius\cli\CLA;
+use forsetius\cli\Argument;
 use forsetius\reuse\GlobalPool as Pool;
 use forsetius\maptools\Image\AbstractImage;
 
-class ImageCLA extends CLI\CLA
+class ImageCLA extends CLA
 {
 	/**
 	 * @return void constructor
 	*/
 	public function __construct(array $options = array())
 	{
-	    $s = new CLI\Requisite('s');
+	    $s = new Argument\Requisite('s');
 	    $s->setValid(['class'=>'filepath'])->setAlias('source');
 	    $s->setHelp('source-path', 'Path and filename to source image');
 	    
-    	$verb = new CLI\Verb('command');
+    	$verb = new Argument\Verb('command');
     	$verb->setValid(['set'=>Pool::getConf()->get('app:module:'. Pool::getModule() .':command')]);
     	$verb->setHelp('command',''); //TODO
     	
@@ -40,11 +41,11 @@ class ImageCLA extends CLI\CLA
 	        return $val;
 	    };
 	    
-	    $o = new CLI\Parameter('o', Pool::getConf()->get("default:outputImgName"));
+	    $o = new Argument\Parameter('o', Pool::getConf()->get("default:outputImgName"));
 	    $o->setValid(['class'=>'dirpath'])->setAlias('output')->setTransform($outputName);
 	    $o->setHelp('output-path', 'Path and filename to output image');
 	    
-	    $g = new CLI\Parameter('g', Pool::getConf()->get("default:gfxLib"));
+	    $g = new Argument\Parameter('g', Pool::getConf()->get("default:gfxLib"));
 	    $g->setValid(['set'=>['gd','imagick']])->setAlias('gfx');
 	    $g->setHelp('library-name',<<<EOH
 Graphics manipulation library to use. Only libraries installed on your system can be used.

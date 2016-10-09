@@ -1,5 +1,5 @@
 <?php
-namespace forsetius\cli;
+namespace forsetius\cli\Argument;
 
 /**
  * Command-line switch used to enable some functionality.
@@ -8,7 +8,7 @@ namespace forsetius\cli;
  *
  */
 
-class Flag extends aArgument
+class Flag extends AbstractArgument
 {
     public function __construct($name, $default = false)
     {

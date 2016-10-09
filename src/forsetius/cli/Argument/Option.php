@@ -1,5 +1,5 @@
 <?php
-namespace forsetius\cli;
+namespace forsetius\cli\Argument;
 
 /**
  * Command-line switch that can enable some feature and also
@@ -9,7 +9,7 @@ namespace forsetius\cli;
  * @author forseti
  *
  */
-class Option extends aArgument
+class Option extends AbstractArgument
 {
 
     protected $default;

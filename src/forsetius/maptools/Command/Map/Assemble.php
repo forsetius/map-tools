@@ -3,8 +3,8 @@ namespace forsetius\maptools\Command\Map;
 use forsetius\cli\Command\AbstractCommand;
 use forsetius\maptools\CapabilityException;
 use forsetius\maptools\Image\AbstractImage;
-use forsetius\cli\Parameter;
-use forsetius\cli\Requisite;
+use forsetius\cli\Argument\Parameter;
+use forsetius\cli\Argument\Requisite;
 use forsetius\cli\ProgressBar;
 use forsetius\reuse\GlobalPool as Pool;
 

@@ -2,7 +2,7 @@
 namespace forsetius\maptools\Command\Map;
 use forsetius\cli\Command\AbstractCommand;
 use forsetius\cli\ProgressBar;
-use forsetius\cli\Option;
+use forsetius\cli\Argument\Option;
 use forsetius\reuse\FilesystemException as FSe;
 use forsetius\maptools\Image\AbstractImage;
 use forsetius\reuse\GlobalPool as Pool;
