@@ -13,15 +13,15 @@ class ImageCLA extends CLA
 	/**
 	 * @return void constructor
 	*/
-	public function __construct(array $options = array())
+	public function __construct(array $namedArgs = [], array $posArgs = [])
 	{
 	    $s = new Argument\Requisite('s');
 	    $s->setValid(['class'=>'filepath'])->setAlias('source');
 	    $s->setHelp('source-path', 'Path and filename to source image');
 	    
-    	$verb = new Argument\Verb('command');
-    	$verb->setValid(['set'=>Pool::getConf()->get('app:module:'. Pool::getModule() .':command')]);
-    	$verb->setHelp('command',''); //TODO
+    	$command = new Argument\Parameter('command', 'core');
+    	$command->setValid(['set'=>Pool::getConf()->get('app:module:'. Pool::getModule() .':command')]);
+    	$command->setHelp('command',''); //TODO
     	
 	    $outputName = function($val)
 	    {
@@ -56,7 +56,7 @@ Supported libraries are:
 EOH
 	    );
 	    
-        parent::__construct(array_merge([$verb, $s, $g, $o], $options));
+        parent::__construct(array_merge([$s, $g, $o], $namedArgs), [1=>$command]);
 	}
 	
 	public function postproc() {

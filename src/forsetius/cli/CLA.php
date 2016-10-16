@@ -4,7 +4,6 @@ namespace forsetius\cli;
 use forsetius\cli\Help;
 use forsetius\reuse\Collection;
 use forsetius\reuse\LogicException;
-use forsetius\cli\SyntaxException;
 use forsetius\reuse\GlobalPool as Pool;
 
 /**
@@ -12,11 +11,13 @@ use forsetius\reuse\GlobalPool as Pool;
  */
 class CLA
 {
-    protected $args;
+    protected $namedArgs;
+    protected $posArgs;
 
-    public function __construct(array $args = array())
+    public function __construct(array $namedArgs = [], $posArgs = [])
     {
-        $this->args = new Collection('forsetius\cli\Argument\AbstractArgument');
+        $this->namedArgs = new Collection('forsetius\cli\Argument\AbstractArgument');
+        $this->posArgs = new Collection('forsetius\cli\Argument\AbstractArgument');
         
         $v = new Argument\Option('v', Pool::getConf()->get("default:verbosity"));
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
@@ -53,12 +54,12 @@ Enter developer mode suitable for batch-testing. Options:
 EOH
     	);
 
-        $this->addArgs(array_merge([$v, $version, $help, $test], $args));
+        $this->addArgs(array_merge([$v, $version, $help, $test], $namedArgs));
     }
 
     public function addArg(Argument\AbstractArgument $arg)
     {
-        $this->args[$arg->getName()] = $arg;
+        $this->namedArgs[$arg->getName()] = $arg;
 
         return $this;
     }
@@ -84,77 +85,64 @@ EOH
      */
     public function parse()
     {
-        // check if first parameter is verb
-        if ($this->hasArgument('command')) {
-        	$this->args['command']->setValue($GLOBALS['argv'][1]);
-	        $i = 2;
-        } else {
-        	$i = 1;
-        }
-        
-        $allowedArgs = array();
-        foreach ($this->args as $argName=>&$arg) {
-        	$names = $arg->getAlias();
-        	array_unshift($names, $arg->getName());
-        	$allowedArgs = array_merge($allowedArgs, array_fill_keys($names, $arg));
-        }
-
-        $max = $GLOBALS['argc']-$i;
-        while ($i <= $max) {
-            // Disallow arguments like '---any', '--s' and '-long'
-            $argName = $this->getArgumentName($GLOBALS['argv'][$i]);
-            if ($argName !== false) {
-
-                // Allow only previously defined arguments
-                if (\array_key_exists($argName, $allowedArgs)) {
-                    // Disallow arguments with empty values like '-s ""'
-                    if (($i < $max) && $GLOBALS['argv'][$i+1]=='') {
-                        throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
-                    }
-                    // if argument without value then set it to true. Classes derived from AbstractArgument will decide if it's correct later
-                    elseif ($i == $max || ($this->getArgumentName($GLOBALS['argv'][$i+1]) !== false)) {
-                        $allowedArgs[$argName]->setValue(true);
-                        $i++;
-                    }
-                    // if argument with value then assign it the value
-                    else {
-                        $allowedArgs[$argName]->setValue($GLOBALS['argv'][$i+1]);
-                        $i+=2;
-                    }
-                } else throw new SyntaxException("Unexpected argument `$argName`", SyntaxException::UNEXPECTED_ARGUMENT);
-            } else throw new SyntaxException("Wrong syntax of `{$GLOBALS['argv'][$i][0]}` argument", SyntaxException::BAD_SYNTAX);
-        }
-
-        $this->postproc();
-        return $this;
-    }
-
-    protected function getArgumentName($str)
-    {
-        $name = \preg_replace('/(?:^-([\w\d])$)|(?:^--([\w\d][\w\d_?!.:-]+)$)/', '$1$2', $str,1);
-        if (\is_null($name)) {
-            throw new LogicException("Error in regexp with `$str` string");
-        }
-        return ($str == $name) ? false : $name;
+    	//
+    	// positional arguments processed first
+    	//
+    	$cla = $GLOBALS['argv'];
+    	
+    	// we could use 'for' loop to iterate like this:
+    	// $this->posArgs[$i]->setValue($args[$i]);
+    	// but this forces continuous indices in $this->posArgs
+    	// or testing for non-existing indices and skipping it - inefficient
+    	$i = 1;
+    	$max = \count($cla) - 1;
+    	$this->posArgs->ksort();
+    	foreach ($this->posArgs as $posArg) {
+    		if ($i > $max || $cla[$i][0] == '-') break;
+    		$posArg->setValue($cla[$i]);
+    		$i++;
+    	}
+    	
+    	//
+    	// processing named arguments
+    	//
+    	$allowedArgs = array();
+    	foreach ($this->namedArgs as $argName=>&$arg) {
+    		$names = $arg->getAlias();
+    		array_unshift($names, $arg->getName());
+    		$allowedArgs = array_merge($allowedArgs, array_fill_keys($names, $arg));
+    	}
+    	
+    	while ($i < $max) {
+    		// Disallow arguments like '---any', '--s' and '-long'
+    		$argName = $this->getArgumentName($cla[$i]);
+    		echo "$i: $argName\n";
+    		if ($argName !== false) {
+    	
+    			// Allow only previously defined arguments
+    			if (\array_key_exists($argName, $allowedArgs)) {
+    				// Disallow arguments with empty values like '-s ""'
+    				if (($i < $max) && $cla[$i+1]=='') {
+    					throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
+    				}
+    				// if argument without value then set it to true. Classes derived from AbstractArgument will decide if it's correct later
+    				elseif ($i == $max || ($this->getArgumentName($cla[$i+1]) !== false)) {
+    					$allowedArgs[$argName]->setValue(true);
+    					$i++;
+    				}
+    				// if argument with value then assign it the value
+    				else {
+    					$allowedArgs[$argName]->setValue($cla[$i+1]);
+    					$i+=2;
+    				}
+    			} else throw new SyntaxException("Unexpected argument `$argName`", SyntaxException::UNEXPECTED_ARGUMENT);
+    		} else throw new SyntaxException("Wrong syntax of `{$cla[$i][0]}` argument", SyntaxException::BAD_SYNTAX);
+    	}
+    	
+    	$this->postproc();
+    	return $this;
     }
     
-    public function hasArgument($name)
-    {
-    	return (key_exists($name, $this->args));
-    }
-
-    public function __get($name)
-    {
-    	// TODO exception
-    	return $this->args[$name]->getValue();
-    }
-
-    public function __set($name, $val)
-    {
-        $this->args[$name]->setValue($val);
-        return $this;
-    }
-
     public function postproc()
     {
     	if ($this->v) {
@@ -185,6 +173,31 @@ EOH
     	return array();
     }
 
+    protected function getArgumentName($str)
+    {
+    	$name = \preg_replace('/(?:^-([\w\d])$)|(?:^--([\w\d][\w\d_?!.:-]+)$)/', '$1$2', $str,1);
+    	if (\is_null($name)) {
+    		throw new LogicException("Error in regexp with `$str` string");
+    	}
+    	return ($str == $name) ? false : $name;
+    }
+    
+    public function hasArgument($name)
+    {
+    	return (key_exists($name, $this->namedArgs));
+    }
+    
+    public function __get($name)
+    {
+    	// TODO exception
+    	return $this->namedArgs[$name]->getValue();
+    }
+    
+    public function __set($name, $val)
+    {
+    	$this->namedArgs[$name]->setValue($val);
+    	return $this;
+    }
 }
 
  ?>
