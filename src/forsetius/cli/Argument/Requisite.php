@@ -1,5 +1,6 @@
 <?php
 namespace forsetius\cli\Argument;
+use forsetius\cli\SyntaxException;
 
 /**
  * Command-line parameter used to introduce some value.

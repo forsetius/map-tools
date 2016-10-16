@@ -3,6 +3,7 @@ namespace forsetius\cli\Argument;
 
 use forsetius\reuse\LogicException;
 use forsetius\reuse\iNamed;
+use forsetius\cli\SyntaxException;
 use forsetius\reuse\FilesystemException;
 
 /**

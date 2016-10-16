@@ -1,5 +1,6 @@
 <?php
 namespace forsetius\cli\Argument;
+use forsetius\cli\SyntaxException;
 
 /**
  * Command-line switch used to enable some functionality.
