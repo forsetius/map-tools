@@ -8,7 +8,7 @@ namespace forsetius\cli\Argument;
  * @author forseti
  *
  */
-class Parameter extends AbstractArgument
+class Parameter extends AbstractNamedArgument
 {
     public function __construct($name, $default)
     {

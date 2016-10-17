@@ -16,10 +16,10 @@ class CLA
 
     public function __construct(array $namedArgs = [], $posArgs = [])
     {
-        $this->namedArgs = new Collection('forsetius\cli\Argument\AbstractArgument');
-        $this->posArgs = new Collection('forsetius\cli\Argument\AbstractArgument');
+        $this->namedArgs = new Collection('forsetius\cli\Argument\AbstractNamedArgument');
+        $this->posArgs = new Collection('forsetius\cli\Argument\PositionalParameter');
         
-        $v = new Argument\Option('v', Pool::getConf()->get("default:verbosity"));
+        $v = new Argument\Option('v', Pool::getConf()->get("default:verbosity") + 1);
         $v->setValid(['class'=>'uint', 'max'=>3])->setAlias('verbose');
         $v->setHelp('level',<<<EOH
 Verbosity level:
@@ -94,13 +94,10 @@ EOH
     	// $this->posArgs[$i]->setValue($args[$i]);
     	// but this forces continuous indices in $this->posArgs
     	// or testing for non-existing indices and skipping it - inefficient
-    	$i = 1;
-    	$max = \count($cla) - 1;
     	$this->posArgs->ksort();
     	foreach ($this->posArgs as $posArg) {
-    		if ($i > $max || $cla[$i][0] == '-') break;
-    		$posArg->setValue($cla[$i]);
-    		$i++;
+    		if (\count($cla) < 1 || $cla[$i][0] == '-') break;
+    		$cla = $posArg->parse($cla);
     	}
     	
     	//
@@ -113,30 +110,17 @@ EOH
     		$allowedArgs = array_merge($allowedArgs, array_fill_keys($names, $arg));
     	}
     	
-    	while ($i < $max) {
+    	while (\count($cla) > 0) {
+    		$arg = array_shift($cla);
     		// Disallow arguments like '---any', '--s' and '-long'
-    		$argName = $this->getArgumentName($cla[$i]);
-    		echo "$i: $argName\n";
+    		$argName = $this->getArgumentName($arg);
+
     		if ($argName !== false) {
-    	
     			// Allow only previously defined arguments
     			if (\array_key_exists($argName, $allowedArgs)) {
-    				// Disallow arguments with empty values like '-s ""'
-    				if (($i < $max) && $cla[$i+1]=='') {
-    					throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
-    				}
-    				// if argument without value then set it to true. Classes derived from AbstractArgument will decide if it's correct later
-    				elseif ($i == $max || ($this->getArgumentName($cla[$i+1]) !== false)) {
-    					$allowedArgs[$argName]->setValue(true);
-    					$i++;
-    				}
-    				// if argument with value then assign it the value
-    				else {
-    					$allowedArgs[$argName]->setValue($cla[$i+1]);
-    					$i+=2;
-    				}
+					$cla = $allowedArgs[$argName]->parse($args);
     			} else throw new SyntaxException("Unexpected argument `$argName`", SyntaxException::UNEXPECTED_ARGUMENT);
-    		} else throw new SyntaxException("Wrong syntax of `{$cla[$i][0]}` argument", SyntaxException::BAD_SYNTAX);
+    		} else throw new SyntaxException("Wrong syntax of `$arg` argument", SyntaxException::BAD_SYNTAX);
     	}
     	
     	$this->postproc();
@@ -173,6 +157,15 @@ EOH
     	return array();
     }
 
+    /**
+     * Validate the named argument name and if it's valid
+     * return the name stripped of '-'
+     *
+     * @param string $str
+     * @throws LogicException if error in processing regex
+     * @return boolean|mixed name stripped of leading '-' or false in invalid argument name
+     * 		(for example: -long or --s or ---any)
+     */
     protected function getArgumentName($str)
     {
     	$name = \preg_replace('/(?:^-([\w\d])$)|(?:^--([\w\d][\w\d_?!.:-]+)$)/', '$1$2', $str,1);

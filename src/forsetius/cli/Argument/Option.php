@@ -9,7 +9,7 @@ namespace forsetius\cli\Argument;
  * @author forseti
  *
  */
-class Option extends AbstractArgument
+class Option extends AbstractNamedArgument
 {
 
     protected $default;

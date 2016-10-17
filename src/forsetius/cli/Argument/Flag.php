@@ -9,7 +9,7 @@ use forsetius\cli\SyntaxException;
  *
  */
 
-class Flag extends AbstractArgument
+class Flag extends AbstractNamedArgument
 {
     public function __construct($name, $default = false)
     {

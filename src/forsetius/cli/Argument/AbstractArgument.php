@@ -52,6 +52,25 @@ abstract class AbstractArgument implements iNamed
         $this->value = $default;
     }
 
+    public function parse($cla)
+    {
+    	// Disallow arguments with empty values like '-s ""'
+    	if (($i < $max) && $cla[$i+1]=='') {
+    		throw new SyntaxException("Empty values are not allowed", SyntaxException::BAD_SYNTAX);
+    	}
+    	// if argument without value then set it to true. Classes derived from AbstractArgument will decide if it's correct later
+    	elseif ($i == $max || ($this->getArgumentName($cla[$i+1]) !== false)) {
+    		$allowedArgs[$argName]->setValue(true);
+    		$i++;
+    	}
+    	// if argument with value then assign it the value
+    	else {
+    		$allowedArgs[$argName]->setValue($cla[$i+1]);
+    		$i+=2;
+    	}
+    	return $cla;
+    }
+    
     public function setValid(array $valid)
     {
         $this->valid = $valid;

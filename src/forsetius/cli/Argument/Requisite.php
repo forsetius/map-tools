@@ -9,7 +9,7 @@ use forsetius\cli\SyntaxException;
  * @author forseti
  *
  */
-class Requisite extends AbstractArgument
+class Requisite extends PositionalParameter
 {
     public function __construct($name)
     {
